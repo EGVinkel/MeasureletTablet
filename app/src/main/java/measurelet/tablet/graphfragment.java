@@ -6,15 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class graphfragment extends Fragment implements View.OnClickListener {
@@ -24,19 +30,30 @@ public class graphfragment extends Fragment implements View.OnClickListener {
     private int[] dummyvalues= new int[]{1700,1800,2000,1500,1600,1700,1800,1500,2400,2200,2800,2300,2000,3000,1100,2100,1900,2400,2600,2700,2300,1900,1800,2000,3000,1900,3000,2900,2100,2400};
     private ImageButton add;
     private DialogFragment væskreg = new DialogFragment();
+    private Date startdate;
+    private TextView dato;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
             view= inflater.inflate(R.layout.fragment_graphfragment, container, false);
             GraphView graph = view.findViewById(R.id.graphholder);
-            Calendar calendar = Calendar.getInstance();
-            for(int i=1;i<=30;i++){
 
+
+
+            Calendar calendar = Calendar.getInstance();
+            startdate=calendar.getTime();
+            dato= view.findViewById(R.id.dato);
+            LocalDate date=LocalDate.now();
+            DateTimeFormatter.ofPattern(date.toString());
+
+            for(int i=1;i<=30;i++){
                 dates.add(calendar.getTime());
-                calendar.add(Calendar.DATE, 1);
+                calendar.add(Calendar.DATE, -1);
+
             }
             int counter=0;
+              Collections.sort(dates);
             for(Date d:dates){
                datapoints.add(new DataPoint(d,dummyvalues[counter]));
                counter++;
@@ -52,8 +69,9 @@ public class graphfragment extends Fragment implements View.OnClickListener {
 
             graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
 
-            graph.getViewport().setBackgroundColor(R.color.colorPrimaryDark);
-            graph.getViewport().setMinX(dates.get(0).getTime());
+
+
+            graph.getViewport().setMinX(startdate.getTime());
             graph.getViewport().setMaxX(dates.get(4).getTime());
             graph.getViewport().setXAxisBoundsManual(true);
             graph.getGridLabelRenderer().setHorizontalAxisTitle("Dage");
