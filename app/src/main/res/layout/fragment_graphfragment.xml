@@ -31,7 +31,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/customshape"
         android:orientation="vertical"
         android:visibility="visible"
@@ -49,13 +48,13 @@
             android:textAlignment="center" />
 
         <EditText
-            android:id="@+id/Datapunkt1"
+            android:id="@+id/kgdata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="85"
+            android:text="70"
             android:textAlignment="center" />
 
         <TextView
@@ -67,13 +66,13 @@
             android:textAlignment="center" />
 
         <EditText
-            android:id="@+id/Datapunkt2"
+            android:id="@+id/mldata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:ems="10"
             android:inputType="number"
-            android:text="2400"
+            android:text="2200"
             android:textAlignment="center" />
     </LinearLayout>
 
@@ -99,11 +98,10 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.65" />
 
-    <com.jjoe64.graphview.GraphView
+    <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/graphholder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:focusedByDefault="false"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -117,7 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.60" />
+        app:layout_constraintGuide_percent="0.70" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline5"
@@ -133,14 +131,12 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.20" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartkg"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/customshape"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
