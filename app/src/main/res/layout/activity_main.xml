@@ -20,11 +20,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/customshape"
         android:clipChildren="true"
         android:clipToPadding="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline17"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,15 +34,73 @@
         android:id="@+id/fragmentholder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bedlist"
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.80" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <Button
+        android:id="@+id/clearcheck"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ripple"
+        android:drawableStart="@drawable/ic_clear"
+        android:paddingStart="35dp"
+        android:paddingEnd="30dp"
+        android:text="Ryd\nTjek-\nliste"
+        android:textAlignment="textStart"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline18"
+        app:layout_constraintEnd_toStartOf="@+id/guideline19"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline17" />
+
+    <Button
+        android:id="@+id/addbed"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ripple"
+        android:drawableStart="@drawable/ic_add"
+        android:drawableTint="#00c853"
+        android:paddingStart="35dp"
+        android:paddingEnd="30dp"
+        android:text="Tilføj Seng"
+        android:textAlignment="textStart"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline18"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline19"
+        app:layout_constraintTop_toTopOf="@+id/guideline17" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
 
 </android.support.constraint.ConstraintLayout>

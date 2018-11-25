@@ -5,17 +5,16 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".graphfragment">
+    tools:context=".Graphfragment">
 
 
     <ImageButton
         android:id="@+id/plusbut"
-        android:layout_width="45dp"
-        android:layout_height="30dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:background="?android:attr/colorBackground"
         android:scaleType="fitCenter"
         android:src="@drawable/rippleplusb"
@@ -135,8 +134,6 @@
         android:id="@+id/chartkg"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
@@ -148,7 +145,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.80" />
+        app:layout_constraintGuide_percent="0.75" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline11"
@@ -158,16 +155,16 @@
         app:layout_constraintGuide_percent="0.10" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/bedheader"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Seng 1"
         android:textAlignment="center"
-        android:textSize="14sp"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
@@ -192,5 +189,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <TextView
+        android:id="@+id/nyreg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="16dp"
+        android:text="Ny\nRegistrering"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline11" />
 
 </android.support.constraint.ConstraintLayout>

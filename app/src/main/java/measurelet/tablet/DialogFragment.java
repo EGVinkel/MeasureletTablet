@@ -2,8 +2,10 @@ package measurelet.tablet;
 
 
 import android.app.AlertDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +25,11 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
     private EditText enteredml,enteredtime,enteredname;
     private CheckBox iv;
     private ImageButton add;
-    private TextView timetitle;
+    private TextView timetitle, title, mltitle, typetitle;
     private int ml,time;
     private String liqtyp,tim;
     private LinearLayout hidden;
+    private Typeface font;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,12 +40,25 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dialog, container, false);
+        font = Typeface.createFromAsset(getActivity().getAssets(), "font/Helvetica.ttf");
         enteredname=v.findViewById(R.id.liquidtype);
+        title = v.findViewById(R.id.overskrift);
+        title.setTypeface(font);
+        mltitle = v.findViewById(R.id.ml);
+        mltitle.setTypeface(font);
+        typetitle = v.findViewById(R.id.typeliq);
+        typetitle.setTypeface(font);
+
+
+
+
         enteredml=v.findViewById(R.id.amountofliquid);
         timetitle=v.findViewById(R.id.timetitle);
+        timetitle.setTypeface(font);
         enteredtime=v.findViewById(R.id.time);
         hidden=v.findViewById(R.id.gemtid);
         iv=v.findViewById(R.id.checkBoxIV);
+        iv.setTypeface(font);
         iv.setOnCheckedChangeListener(this);
         add=v.findViewById(R.id.plusbut);
         add.setOnClickListener(this);
@@ -103,5 +119,14 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
 
 
         }
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        super.show(getActivity().getSupportFragmentManager(), "hej");
+        enteredml.setText("");
+        enteredtime.setText("");
+        enteredname.setText("");
+
     }
 }
