@@ -47,7 +47,6 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private XAxis xAxisml, xAxiskg;
     private BarChart graphml;
     private LineChart graphkg;
-    private String temp;
     private BarData bardata;
     private LineData kgdata;
     private SimpleDateFormat formate;
