@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 
 /**
@@ -63,7 +68,9 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
         add=v.findViewById(R.id.plusbut);
         add.setOnClickListener(this);
         liqtyp="vand";
-
+        enteredml.setText("");
+        enteredtime.setText("");
+        enteredname.setText("");
 
         return v;
     }
@@ -95,7 +102,7 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
             liqtyp = enteredname.getText().toString();
 
             Toast.makeText(getActivity(),  ml + "ml " + liqtyp+" over "+time+" timer", Toast.LENGTH_LONG).show();
-            this.dismiss();
+            NavHostFragment.findNavController(this).navigateUp();//(R.id.action_global_dialogFragment);
         }
 
     }
@@ -121,12 +128,4 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
         }
     }
 
-    @Override
-    public void show(FragmentManager manager, String tag) {
-        super.show(getActivity().getSupportFragmentManager(), "hej");
-        enteredml.setText("");
-        enteredtime.setText("");
-        enteredname.setText("");
-
-    }
 }

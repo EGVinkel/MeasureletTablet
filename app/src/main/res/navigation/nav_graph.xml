@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/startFragment">
+
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="measurelet.tablet.StartFragment"
+        android:label="fragment_start"
+        tools:layout="@layout/fragment_start" />
+    <fragment
+        android:id="@+id/graphfragment"
+        android:name="measurelet.tablet.Graphfragment"
+        android:label="fragment_graphfragment"
+        tools:layout="@layout/fragment_graphfragment" />
+    <fragment
+        android:id="@+id/dialogFragment"
+        android:name="measurelet.tablet.DialogFragment"
+        android:label="fragment_dialog"
+        tools:layout="@layout/fragment_dialog" />
+    <action android:id="@+id/action_global_dialogFragment"
+        app:destination="@id/dialogFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popUpTo="@id/graphfragment"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    <action android:id="@+id/action_global_startFragment"
+        app:destination="@id/startFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popUpTo="@id/startFragment"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    <action
+        android:id="@+id/action_enterright"
+        app:destination="@id/graphfragment"
+        app:enterAnim="@animator/enter_from_right"
+        app:exitAnim="@animator/exit_to_left"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@+id/startFragment" />
+    <action
+        android:id="@+id/action_enterleft"
+        app:destination="@id/graphfragment"
+        app:enterAnim="@animator/enter_from_left"
+        app:exitAnim="@animator/exit_to_right"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@+id/startFragment" />
+</navigation>

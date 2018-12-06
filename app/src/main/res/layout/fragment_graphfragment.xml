@@ -42,41 +42,39 @@
             android:id="@+id/weight"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:autoSizeTextType="uniform"
-            android:text="Vægt\n(i kg)"
-            android:textAlignment="center"
-            android:layout_weight="1" />
+            android:text="Vægt"
+            android:textAlignment="center" />
 
-        <EditText
+        <TextView
             android:id="@+id/kgdata"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="70"
-            android:textAlignment="center"
-            android:layout_weight="1" />
+            android:textAlignment="center" />
 
         <TextView
             android:id="@+id/mili"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:autoSizeTextType="uniform"
-            android:text="Væske indtaget \n (i ml) "
-            android:textAlignment="center"
-            android:layout_weight="1" />
+            android:text="Væske indtaget"
+            android:paddingStart="6dp"
+            android:paddingLeft="6dp"
+            android:textAlignment="center" />
 
-        <EditText
+        <TextView
             android:id="@+id/mldata"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:autoSizeTextType="uniform"
             android:ems="10"
-            android:inputType="number"
-            android:text="2200"
-            android:textAlignment="center"
-            android:layout_weight="1" />
+            android:textAlignment="center" />
     </LinearLayout>
 
     <ImageView

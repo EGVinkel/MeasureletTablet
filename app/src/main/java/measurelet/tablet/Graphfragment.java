@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
+import androidx.navigation.fragment.NavHostFragment;
+
 
 public class Graphfragment extends Fragment implements View.OnClickListener, OnChartValueSelectedListener {
     private View view;
@@ -42,7 +44,6 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private int[] dummyvaluesml = new int[]{1700, 1800, 2000, 1500, 1600, 1700, 1800, 1500, 2400, 2200, 2800, 2300, 2000, 3000, 1100, 2100, 1900, 2400, 2600, 2700, 2300, 1900, 1800, 2000, 3000, 1900, 3000, 2900, 2100, 2400};
     private float[] dummyvalueskg = new float[]{70.5f, 71, 70.7f, 73, 72, 70.7f, 72, 70.7f, 72, 72, 70.7f, 70.5f, 70.7f, 70.5f, 70.5f, 71.3f, 71.3f, 71.3f, 71.5f, 71.7f, 71.6f, 72.3f, 73.3f, 75.3f, 69.4f, 69.3f, 74.3f, 72.3f, 73.3f, 70.3f};
     private ImageButton add;
-    private DialogFragment væskreg = new DialogFragment();
     private TextView dato, mlday, weightday, header, nyreg;
     private XAxis xAxisml, xAxiskg;
     private BarChart graphml;
@@ -98,7 +99,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     @Override
     public void onClick(View view) {
         if(view==add){
-            væskreg.show( getActivity().getSupportFragmentManager().beginTransaction(),"hej");
+            NavHostFragment.findNavController(this).navigate(R.id.action_global_dialogFragment);
         }
     }
 
@@ -106,8 +107,8 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     public void onValueSelected(Entry e, Highlight h) {
 
         dato.setText("Den: " + dates.get((int) e.getX()));
-        mlday.setText(df.format(datapoints.get((int) e.getX()).getY()));
-        weightday.setText(df.format(datapoints2.get((int) e.getX()).getY()));
+        mlday.setText(df.format(datapoints.get((int) e.getX()).getY())+" ml");
+        weightday.setText(df.format(datapoints2.get((int) e.getX()).getY())+" kg");
         graphkg.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
         graphkg.highlightValue(h);
         graphml.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
@@ -176,9 +177,9 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getRealSize(size);
-        System.out.println(size);
+
         float offx = ((size.x * 0.7f) * 0.65f) / 48;
-        System.out.println(offx);
+
         markoer.setOffset(-offx, -offx);
         this.graphkg.setMarker(markoer);
         this.graphkg.getDescription().setEnabled(false);
@@ -192,13 +193,13 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         xAxiskg.setValueFormatter(getformatter());
         xAxiskg.setGranularity(1f);
         graphkg.setOnChartValueSelectedListener(this);
-        this.graphkg.setVisibleXRangeMaximum(3);
-        this.graphkg.setVisibleXRangeMinimum(3);
-        this.graphkg.setTouchEnabled(true);
-        this.graphkg.setDrawBorders(true);
-        this.graphkg.getAxisRight().setEnabled(false);
-        this.graphkg.getDescription().setTypeface(font);
-        this.graphkg.invalidate();
+        graphkg.setVisibleXRangeMaximum(3);
+        graphkg.setVisibleXRangeMinimum(3);
+        graphkg.setTouchEnabled(true);
+        graphkg.setDrawBorders(true);
+        graphkg.getAxisRight().setEnabled(false);
+        graphkg.getDescription().setTypeface(font);
+        graphkg.invalidate();
 
 
     }

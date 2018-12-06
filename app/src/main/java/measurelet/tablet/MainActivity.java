@@ -3,6 +3,7 @@ package measurelet.tablet;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,26 +15,31 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ArrayList<Integer> beds = new ArrayList<>();
     private RecyclerView re;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
     private Bundle argbund;
-    private Button clear, add;
+    private ImageButton clear, add;
     private Typeface font;
     private boolean sortani = true;
     private int prevpos;
     private Integer inputbed;
+    private NavController navC;
+    private AlertDialog ad;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (argbund == null) {
             argbund = new Bundle();
         }
+        navC=Navigation.findNavController(findViewById(R.id.nav_host));
 
 
-        getSupportFragmentManager().beginTransaction().add(R.id.fragmentholder, new StartFragment()).commit();
         add = findViewById(R.id.addbed);
         clear = findViewById(R.id.clearcheck);
         clear.setOnClickListener(this);
@@ -83,26 +89,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (add == view) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Tast sengenummer");
 
+            builder.setCancelable(true);
 
             final EditText input = new EditText(this);
 
-            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            input.setInputType(InputType.TYPE_CLASS_NUMBER);
             builder.setView(input);
 
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (input.getText().toString() == "") {
-                        input.setText("1");
+
+                    if (input.getText().length()==0) {
+
+
+                        Handler handler = new Handler();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                            ad.show();
+                            }
+                        });
                     }
-                    inputbed = Integer.parseInt(input.getText().toString());
-                    beds.add(inputbed);
-                    Collections.sort(beds);
-                    mAdapter = new MyAdapter(beds);
-                    re.setAdapter(mAdapter);
+                    if(input.getText().length()>0) {
+                        inputbed = Integer.parseInt(input.getText().toString());
+                        beds.add(inputbed);
+                        Collections.sort(beds);
+                        mAdapter = new MyAdapter(beds);
+                        re.setAdapter(mAdapter);
+                    }
 
                 }
             });
@@ -112,8 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.cancel();
                 }
             });
-
-            builder.show();
+            ad=builder.show();
 
         }
 
@@ -122,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements View.OnClickListener, View.OnLongClickListener {
         private ArrayList<Integer> bedlist;
+
         private SparseBooleanArray statusArray = new SparseBooleanArray();
 
         public MyAdapter(ArrayList<Integer> beds) {
@@ -152,15 +170,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 if (itemPosition < prev) {
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.animator.enter_from_left, R.animator.exit_to_right).replace(R.id.fragmentholder, graph).commit();
 
+                    navC.navigate(R.id.action_enterleft,argbund);
                 }
                 if (itemPosition >= prev) {
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left).replace(R.id.fragmentholder, graph).commit();
+                    navC.navigate(R.id.action_enterright,argbund);
+
                 }
             }
             if (beds.isEmpty()) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentholder, new StartFragment()).commit();
+               navC.popBackStack();
             }
 
         }
@@ -171,9 +190,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             beds.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, beds.size());
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentholder, new StartFragment()).commit();
-
-            return false;
+            navC.navigate(R.id.action_global_startFragment);
+            mAdapter = new MyAdapter(beds);
+            re.setAdapter(mAdapter);
+            return true;
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -204,7 +224,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         statusArray.put(positionen, false);
                     }
                 }
+
             }
+
 
             private void bind(int position) {
                 if (!statusArray.get(position, false)) {
@@ -240,7 +262,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             return bedlist.size();
         }
+
     }
+
 
 }
 
