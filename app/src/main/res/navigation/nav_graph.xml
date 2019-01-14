@@ -14,19 +14,13 @@
         android:id="@+id/graphfragment"
         android:name="measurelet.tablet.Graphfragment"
         android:label="fragment_graphfragment"
-        tools:layout="@layout/fragment_graphfragment" />
+        tools:layout="@layout/fragment_graphfragment" >
+    </fragment>
     <fragment
         android:id="@+id/dialogFragment"
         android:name="measurelet.tablet.DialogFragment"
         android:label="fragment_dialog"
         tools:layout="@layout/fragment_dialog" />
-    <action android:id="@+id/action_global_dialogFragment"
-        app:destination="@id/dialogFragment"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popUpTo="@id/graphfragment"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     <action android:id="@+id/action_global_startFragment"
         app:destination="@id/startFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
@@ -50,4 +44,16 @@
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"
         app:popUpTo="@+id/startFragment" />
+    <action
+        android:id="@+id/action_graphfragment_to_dialogFragment"
+        app:destination="@id/dialogFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+
+
+
+
 </navigation>

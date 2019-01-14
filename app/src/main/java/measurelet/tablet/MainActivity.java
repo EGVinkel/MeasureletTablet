@@ -1,6 +1,6 @@
 package measurelet.tablet;
 
-import android.content.DialogInterface;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,35 +10,39 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.text.InputType;
-import android.util.SparseBooleanArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private ArrayList<Integer> beds = new ArrayList<>();
+    private ArrayList<Testpatient> beds = new ArrayList<>();
     private RecyclerView re;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Bundle argbund;
-    private ImageButton clear, add;
+    private Button add;
+    private CheckBox clear;
     private Typeface font;
     private boolean sortani = true;
     private int prevpos;
     private Integer inputbed;
     private NavController navC;
     private AlertDialog ad;
+    private Context con= this;
 
 
     @Override
@@ -47,26 +51,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         font = Typeface.createFromAsset(getAssets(), "font/Helvetica.ttf");
         for (int i = 1; i <= 15; i++) {
-            beds.add(i);
+            beds.add(new Testpatient(false,i));
         }
         if (argbund == null) {
             argbund = new Bundle();
         }
         navC=Navigation.findNavController(findViewById(R.id.nav_host));
 
-
-        add = findViewById(R.id.addbed);
-        clear = findViewById(R.id.clearcheck);
+        add = findViewById(R.id.ny);
+        clear = findViewById(R.id.checkall);
         clear.setOnClickListener(this);
         add.setOnClickListener(this);
         re= findViewById(R.id.bedlist);
         re.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(con);
         re.setLayoutManager(mLayoutManager);
-        DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        DividerItemDecoration itemDecor = new DividerItemDecoration(con, DividerItemDecoration.VERTICAL);
         re.addItemDecoration(itemDecor);
         mAdapter = new MyAdapter(beds);
         re.setAdapter(mAdapter);
+
 
 
     }
@@ -82,54 +86,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == clear) {
-            mAdapter = new MyAdapter(beds);
-            re.setAdapter(mAdapter);
+           for(Testpatient p:beds){
+               if(!p.getChecked()&&clear.isChecked()){
+                   p.setChecked(true);
 
+               }
+               if(p.getChecked()&&!clear.isChecked()){
+                   p.setChecked(false);
+
+               }
+
+           }
+            mAdapter.notifyDataSetChanged();
 
         }
         if (add == view) {
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(con);
             builder.setTitle("Tast sengenummer");
 
             builder.setCancelable(true);
 
-            final EditText input = new EditText(this);
-
+            final EditText input = new EditText(con);
+            int maxLength = 3;
+            input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
             input.setInputType(InputType.TYPE_CLASS_NUMBER);
             builder.setView(input);
 
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+            builder.setPositiveButton("OK", (dialog, which) -> {
 
-                    if (input.getText().length()==0) {
+                if (input.getText().length()==0) {
 
 
-                        Handler handler = new Handler();
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                            ad.show();
-                            }
-                        });
-                    }
-                    if(input.getText().length()>0) {
-                        inputbed = Integer.parseInt(input.getText().toString());
-                        beds.add(inputbed);
-                        Collections.sort(beds);
-                        mAdapter = new MyAdapter(beds);
-                        re.setAdapter(mAdapter);
-                    }
+                    Handler handler = new Handler();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                        ad.show();
+                        }
+                    });
+                }
+                if(input.getText().length()>0) {
+                    inputbed = Integer.parseInt(input.getText().toString());
+                    beds.add(new Testpatient(false,inputbed));
+                    beds.sort(Comparator.comparingInt(Testpatient::getBednumber));
+                    mAdapter.notifyDataSetChanged();
 
                 }
+
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
             ad=builder.show();
 
         }
@@ -137,12 +143,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements View.OnClickListener, View.OnLongClickListener {
-        private ArrayList<Integer> bedlist;
-
-        private SparseBooleanArray statusArray = new SparseBooleanArray();
-
-        public MyAdapter(ArrayList<Integer> beds) {
+    private class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements View.OnClickListener {
+        private ArrayList<Testpatient> bedlist;
+        private MyAdapter(ArrayList<Testpatient> beds) {
             this.bedlist = beds;
 
         }
@@ -150,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onClick(View view) {
+//            System.out.println("Hej hej"+AppData.patientlist.get(0).getName());
+
             int itemPosition = re.getChildLayoutPosition(view);
 
             if (sortani) {
@@ -164,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             setPrevpos(itemPosition);
             if (!beds.isEmpty()) {
-                argbund.putInt("nr", beds.get(itemPosition));
+                argbund.putInt("nr", beds.get(itemPosition).getBednumber());
                 Graphfragment graph = new Graphfragment();
                 graph.setArguments(argbund);
 
@@ -184,21 +189,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        @Override
-        public boolean onLongClick(View view) {
-            int position = re.getChildLayoutPosition(view);
-            beds.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, beds.size());
-            navC.navigate(R.id.action_global_startFragment);
-            mAdapter = new MyAdapter(beds);
-            re.setAdapter(mAdapter);
-            return true;
-        }
 
         public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public TextView bednumber;
             public CheckBox checker;
+            private ImageButton delete;
 
             public MyViewHolder(View v) {
                 super(v);
@@ -206,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bednumber.setTypeface(font);
                 checker = v.findViewById(R.id.bedcheck);
                 checker.setOnClickListener(this);
+                delete= v.findViewById(R.id.deletebutton);
+                delete.setOnClickListener(this);
 
 
             }
@@ -216,23 +213,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 if (view == checker) {
-                    if (!statusArray.get(positionen, false)) {
+                    if (!bedlist.get(positionen).getChecked()) {
                         checker.setChecked(true);
-                        statusArray.put(positionen, true);
-                    } else {
+                        bedlist.get(positionen).setChecked(true);
+                    } else  if (bedlist.get(positionen).getChecked()){
                         checker.setChecked(false);
-                        statusArray.put(positionen, false);
+                        bedlist.get(positionen).setChecked(false);
                     }
+                }
+                if(view==delete){
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(con);
+                    builder.setTitle("Er du sikker på du vil slette?");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("OK", (dialog, which) -> {
+
+                        beds.remove(positionen);
+                        notifyItemRemoved(positionen);
+                        notifyItemRangeChanged(positionen, beds.size());
+                        navC.navigate(R.id.action_global_startFragment);
+
+
+
+                    });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                    builder.show();
                 }
 
             }
 
 
             private void bind(int position) {
-                if (!statusArray.get(position, false)) {
-                    checker.setChecked(false);
-                } else {
+                if (bedlist.get(position).getChecked()) {
                     checker.setChecked(true);
+                } else if(!bedlist.get(position).getChecked()){
+                    checker.setChecked(false);
                 }
 
             }
@@ -243,14 +257,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listlayout, viewGroup, false);
             v.setOnClickListener(this);
-            v.setOnLongClickListener(this);
 
             return new MyViewHolder(v);
         }
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
-            myViewHolder.bednumber.setText("Seng " + bedlist.get(position));
+            myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBednumber());
             myViewHolder.bind(position);
         }
 

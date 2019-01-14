@@ -66,8 +66,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:autoSizeTextType="uniform"
                 android:background="@drawable/ripple"
-                android:textSize="18sp"
                 android:text="Tilføj Ny"
                 android:visibility="invisible" />
 
@@ -78,19 +78,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:autoSizeTextType="uniform"
             android:clipChildren="true"
-            android:background="@color/background_color2"
             android:clipToPadding="true"
             tools:layout_editor_absoluteX="16dp"
+            android:background="@color/background_color2"
             tools:layout_editor_absoluteY="32dp" />
 
         <Button
             android:id="@+id/ny"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="10dp"
             android:layout_weight="3"
             android:background="@color/colorPrimaryDark"
-            android:textSize="18sp"
+            android:autoSizeTextType="uniform"
             android:text="Tilføj Seng"
             android:visibility="visible" />
 

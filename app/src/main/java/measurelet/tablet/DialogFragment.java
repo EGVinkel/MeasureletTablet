@@ -2,14 +2,17 @@ package measurelet.tablet;
 
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -17,6 +20,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -53,10 +58,6 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
         mltitle.setTypeface(font);
         typetitle = v.findViewById(R.id.typeliq);
         typetitle.setTypeface(font);
-
-
-
-
         enteredml=v.findViewById(R.id.amountofliquid);
         timetitle=v.findViewById(R.id.timetitle);
         timetitle.setTypeface(font);
@@ -71,7 +72,6 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
         enteredml.setText("");
         enteredtime.setText("");
         enteredname.setText("");
-
         return v;
     }
 
@@ -88,10 +88,17 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
             }
 
             if (mil.equals("")) {
+                TextView title = new TextView(getContext());
+                title.setText("Custom Centered Title");
+                title.setPadding(10, 10, 10, 10);
+                title.setGravity(Gravity.CENTER);
+                title.setText("Indtast mængde");
+                title.setTextSize(28);
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Indtast mængde")
+                        .setCustomTitle(title)
                         .setCancelable(true)
                         .show();
+
                 return;
             }
             if(!iv.isChecked()){
@@ -102,7 +109,9 @@ public class DialogFragment extends android.support.v4.app.DialogFragment implem
             liqtyp = enteredname.getText().toString();
 
             Toast.makeText(getActivity(),  ml + "ml " + liqtyp+" over "+time+" timer", Toast.LENGTH_LONG).show();
-            NavHostFragment.findNavController(this).navigateUp();//(R.id.action_global_dialogFragment);
+            Bundle b = new Bundle();
+            b.putInt("nr",getArguments().getInt("nr"));
+            NavHostFragment.findNavController(this).navigate(R.id.action_enterright,b);
         }
 
     }

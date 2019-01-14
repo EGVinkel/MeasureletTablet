@@ -16,6 +16,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
+        android:autoSizeTextType="uniform"
         android:textSize="50sp"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline11"
@@ -68,11 +69,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-
                 android:layout_weight="1"
                 android:text="Input"
                 android:textAlignment="center"
-                android:textSize="30sp" />
+                android:autoSizeTextType="uniform" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -83,14 +83,14 @@
                 android:layout_weight="1"
                 android:text="Output"
                 android:textAlignment="center"
-                android:textSize="30sp" />
+                android:autoSizeTextType="uniform" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:background="@color/background_color2"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -101,7 +101,7 @@
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:textAlignment="center"
-                android:textSize="30sp" />
+                android:autoSizeTextType="uniform" />
 
             <TextView
                 android:id="@+id/output"
@@ -111,7 +111,7 @@
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:textAlignment="center"
-                android:textSize="30sp" />
+                android:autoSizeTextType="uniform" />
 
         </LinearLayout>
 
@@ -123,17 +123,17 @@
             android:background="@color/colorPrimaryDark"
             android:text="Vægt"
             android:textAlignment="center"
-            android:textSize="35sp" />
+            android:autoSizeTextType="uniform" />
 
         <TextView
             android:id="@+id/kgdata"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/background_color2"
             android:ems="10"
+            android:background="@color/background_color2"
             android:textAlignment="center"
-            android:textSize="30sp" />
+            android:autoSizeTextType="uniform"/>
 
     </LinearLayout>
 
@@ -211,7 +211,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="9dp"
         android:layout_marginBottom="4dp"
-        android:textSize="14sp"
+        android:autoSizeTextType="uniform"
         android:text="Ny Registrering"
         android:textAlignment="center"
         android:textStyle="bold"
