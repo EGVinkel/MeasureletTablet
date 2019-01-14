@@ -22,8 +22,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -68,10 +74,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         re.setLayoutManager(mLayoutManager);
         DividerItemDecoration itemDecor = new DividerItemDecoration(con, DividerItemDecoration.VERTICAL);
         re.addItemDecoration(itemDecor);
-        mAdapter = new MyAdapter(beds);
-        re.setAdapter(mAdapter);
 
 
+        AppData.DB_REFERENCE.child("patients").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("APP","ASDASD");
+                Log.d("APP",dataSnapshot.getChildrenCount() + "");
+
+                //HashMap<String,Patient> patients = new HashMap();
+                ArrayList<Patient> patients = new ArrayList<>();
+
+
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                    patients.add(childSnapshot.getValue(Patient.class));
+                }
+
+                Log.d("APP","qweqwe");
+
+                mAdapter = new MyAdapter(patients);
+                re.setAdapter(mAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -144,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements View.OnClickListener {
-        private ArrayList<Testpatient> bedlist;
-        private MyAdapter(ArrayList<Testpatient> beds) {
+        private ArrayList<Patient> bedlist;
+        private MyAdapter(ArrayList<Patient> beds) {
             this.bedlist = beds;
 
         }
@@ -263,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
-            myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBednumber());
+            myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBedNum());
             myViewHolder.bind(position);
         }
 

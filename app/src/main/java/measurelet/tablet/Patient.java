@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public class Patient {
 
+    private Boolean checked = false;
 
     public String uuid;
     private String name;
@@ -29,6 +30,14 @@ public class Patient {
 
     public Patient() {
 
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
 

@@ -29,13 +29,10 @@ public class AppData extends Application {
     public void onCreate() {
         super.onCreate();
         // Required initialization logic here!
-        FirebaseApp.initializeApp(this);
-
-
-
+                createAppDatabase();
     }
 
-    public void getAppDatabase() {
+    public DatabaseReference createAppDatabase() {
 
 
         if (DB_INSTANCE == null) {
@@ -47,7 +44,9 @@ public class AppData extends Application {
             DB_REFERENCE = DB_INSTANCE.getReference();
             Log.d("Reference", "Reference created!");
         }
-        DB_REFERENCE.addListenerForSingleValueEvent(update);
+     //   DB_REFERENCE.addListenerForSingleValueEvent(update);
+
+        return DB_REFERENCE;
     }
 
     private static ValueEventListener update = new ValueEventListener() {
