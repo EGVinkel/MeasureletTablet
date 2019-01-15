@@ -1,4 +1,4 @@
-package measurelet.tablet;
+package measurelet.tablet.Model;
 
 import java.util.Date;
 import java.util.UUID;
@@ -9,14 +9,14 @@ public class Weight {
     private Date timestamp;
     public String uuid;
 
+    public Weight(){
+
+    }
+
     public Weight(double weightKG){
         this.weightKG = weightKG;
         this.timestamp = new Date();
         this.uuid = UUID.randomUUID().toString();
-    }
-
-    public Weight(){
-
     }
 
     public double getWeightKG() {

@@ -15,6 +15,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import measurelet.tablet.Model.Patient;
+
 public class AppData extends Application {
 
 
@@ -45,7 +47,7 @@ public class AppData extends Application {
             Log.d("Reference", "Reference created!");
         }
      //   DB_REFERENCE.addListenerForSingleValueEvent(update);
-
+        DB_REFERENCE.keepSynced(true);
         return DB_REFERENCE;
     }
 
@@ -59,7 +61,7 @@ public class AppData extends Application {
             String patientID;
             for (DataSnapshot child: dataSnapshot.child("patient_identification").getChildren()) {
                patientID = child.getValue(String.class);
-                patientlist.add(dataSnapshot.child("patients").child(patientID).getValue(Patient.class));
+                patientlist.add(dataSnapshot.child("patientsHashmap").child(patientID).getValue(Patient.class));
             }
 
             System.out.println("Succeeded");
@@ -71,13 +73,6 @@ public class AppData extends Application {
         }
     };
 
-  private class GetDBTask extends AsyncTask<Void,Void,Void>{
 
-
-      @Override
-      protected Void doInBackground(Void... voids) {
-          return null;
-      }
-  }
 
 }

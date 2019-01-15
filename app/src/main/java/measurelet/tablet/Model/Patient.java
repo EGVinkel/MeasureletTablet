@@ -1,4 +1,6 @@
-package measurelet.tablet;
+package measurelet.tablet.Model;
+
+import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -10,9 +12,12 @@ public class Patient {
     public String uuid;
     private String name;
     private int bedNum;
-
     private ArrayList<Weight> weights = new ArrayList<>();
     private ArrayList<Intake> registrations = new ArrayList<>();
+
+    public Patient() {
+
+    }
 
     public Patient(String name, int bedNum) {
         this.uuid = UUID.randomUUID().toString();
@@ -28,10 +33,7 @@ public class Patient {
         this.weights = weights;
     }
 
-    public Patient() {
-
-    }
-
+    @Exclude
     public Boolean getChecked() {
         return checked;
     }

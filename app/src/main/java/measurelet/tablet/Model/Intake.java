@@ -1,15 +1,17 @@
-package measurelet.tablet;
+package measurelet.tablet.Model;
 
 import java.util.Date;
 import java.util.UUID;
 
 public class Intake {
-
-
     public String uuid;
     private String type;
     private int size;
     private Date timestamp;
+
+    public Intake() {
+
+    }
 
     public Intake(String type, int size) {
         this.uuid = UUID.randomUUID().toString();
@@ -25,9 +27,6 @@ public class Intake {
         this.timestamp = date;
     }
 
-    public Intake() {
-
-    }
 
     public String getUuid() {
         return uuid;

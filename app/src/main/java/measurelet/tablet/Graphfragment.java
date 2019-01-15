@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Collections;
 
 import androidx.navigation.fragment.NavHostFragment;
+import measurelet.tablet.Model.Patient;
 
 
 public class Graphfragment extends Fragment implements View.OnClickListener, OnChartValueSelectedListener {
@@ -56,6 +57,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private Typeface font;
     private DecimalFormat df;
     private Bundle b= new Bundle();
+    private Patient pat;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,12 +65,15 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         view = inflater.inflate(R.layout.fragment_graphfragment, container, false);
         font = Typeface.createFromAsset(getActivity().getAssets(), "font/Helvetica.ttf");
         header = view.findViewById(R.id.bedheader);
-        int temp = getArguments().getInt("nr");
-        header.setText("Seng " + temp);
+        String temp=getArguments().getString("Id");
+        pat=MainActivity.patientsHashmap.get(temp);
+        b.putString("Id",temp);
+
+
+        header.setText("Seng " + pat.getBedNum()+", "+ pat.getName());
         nyreg = view.findViewById(R.id.nyreg);
         nyreg.setTypeface(font);
         df = new DecimalFormat("#.##");
-
         formate = new SimpleDateFormat("dd-MM-yyyy");
         cal = Calendar.getInstance();
         graphml = view.findViewById(R.id.graphholder);
@@ -82,8 +87,8 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg = view.findViewById(R.id.chartkg);
         add = view.findViewById(R.id.plusbut);
         add.setOnClickListener(this);
-        b.putInt("nr",temp);
-        createdata(getArguments().getInt("nr"));
+
+        createdata(40);
 
         createkggraph();
         createmlgraph();
