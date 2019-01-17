@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/dialogFragment"
-        android:name="measurelet.tablet.DialogFragment"
+        android:name="measurelet.tablet.MyDialogFragment"
         android:label="fragment_dialog"
         tools:layout="@layout/fragment_dialog" />
     <action android:id="@+id/action_global_startFragment"

@@ -2,17 +2,12 @@ package measurelet.tablet;
 
 
 import android.app.AlertDialog;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTabHost;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -21,17 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.fragment.app.DialogFragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class DialogFragment extends android.support.v4.app.DialogFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class MyDialogFragment extends DialogFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private EditText enteredml,enteredtime,enteredname;
     private CheckBox iv;
     private ImageButton add;

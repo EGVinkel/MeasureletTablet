@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
@@ -8,38 +8,28 @@
     tools:context=".Graphfragment">
 
 
-    <TextView
-        android:id="@+id/bedheader"
-        android:layout_width="836dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:textAlignment="viewStart"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline11"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="@+id/guideline5"
-        app:layout_constraintTop_toTopOf="@+id/guideline7" />
-
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/plusbut"
+        style="@style/Widget.PrayerTimes.FABlikeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:background="?android:attr/colorBackground"
-        android:scaleType="fitCenter"
-        android:src="@drawable/rippleplusb"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="40dp"
+        android:padding="10dp"
+        android:text="Ny Registrering"
+        android:textSize="20dp"
+        app:cornerRadius="32dp"
+        app:icon="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
-    <android.support.constraint.Guideline
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,7 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="34dp"
         android:layout_marginEnd="16dp"
         android:focusedByDefault="false"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -60,21 +50,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.65" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.01" />
+        app:layout_constraintGuide_percent="0.01"
+        tools:layout_editor_absoluteX="13dp" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,36 +78,20 @@
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:listitem="@android:layout/simple_selectable_list_item" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.15" />
 
-    <TextView
-        android:id="@+id/nyreg"
-        android:layout_width="303dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:text="Ny Registrering"
-        android:textAlignment="center"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toBottomOf="@+id/plusbut" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
@@ -125,115 +100,198 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.80" />
 
-    <LinearLayout
-        android:id="@+id/dataview"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        style="@style/Widget.MaterialComponents.CardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/background_color2"
-        android:orientation="horizontal"
+        android:layout_marginStart="@dimen/mtrl_card_spacing"
+        android:layout_marginTop="@dimen/mtrl_card_spacing"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="40dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="@+id/guideline6">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="vertical">
+            android:background="@android:color/transparent"
+            android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/mili"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="Input"
-                android:textAlignment="center"
-                app:autoSizeTextType="uniform" />
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/intake"
+                <TextView
+                    android:id="@+id/mili"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:text="Input"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/intake"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
-                android:background="@color/background_color2"
-                android:textAlignment="center"
-                app:autoSizeTextType="uniform" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:text="Output"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/output"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:text="Vægt"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/kgdata"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
         </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/guideline">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textView6"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="Output"
-                android:textAlignment="center"
-                app:autoSizeTextType="uniform" />
+                android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/output"
+                <TextView
+                    android:id="@+id/patname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:layout_weight="1"
+                    android:text="Navn"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/getname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
-                android:background="@color/background_color2"
-                android:textAlignment="center"
-                app:autoSizeTextType="uniform" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/patbed"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:layout_weight="1"
+                    android:text="Seng"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/getbed"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="vertical">
+    </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/weight"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:text="Vægt"
-                android:textAlignment="center"
-                app:autoSizeTextType="uniform" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/kgdata"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="1"
-                android:background="@color/background_color2"
-                android:ems="10"
-                android:textAlignment="center"
-                app:autoSizeTextType="uniform" />
-        </LinearLayout>
-    </LinearLayout>
-
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

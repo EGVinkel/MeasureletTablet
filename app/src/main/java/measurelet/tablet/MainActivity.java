@@ -4,18 +4,12 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,8 +19,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import measurelet.tablet.Model.Patient;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Integer inputbed;
     private Typeface font;
     private AlertDialog ad;
-    private AppCompatTextView add;
+    private TextView add;
     private ArrayList<Patient> patientArrayList;
     private Context con = this;
 
@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         font = Typeface.createFromAsset(getAssets(), "font/Helvetica.ttf");
         navC = Navigation.findNavController(findViewById(R.id.nav_host));
 
-        add = findViewById(R.id.ny);
+       /* add = findViewById(R.id.ny);
         add.setTypeface(font);
         clear = findViewById(R.id.checkall);
         clear.setTypeface(font);
-        clear.setOnClickListener(this);
-        add.setOnClickListener(this);
+        clear.setOnClickListener(this);*/
+//        add.setOnClickListener(this);
         re = findViewById(R.id.bedlist);
         re.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(con);

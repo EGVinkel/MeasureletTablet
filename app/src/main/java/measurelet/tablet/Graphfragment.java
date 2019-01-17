@@ -5,11 +5,9 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -27,10 +25,11 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
+import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import measurelet.tablet.Factories.GraphDataFactory;
 import measurelet.tablet.Formatters.MinXAxisValueFormatter;
@@ -43,14 +42,13 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private ArrayList<BarEntry> mldata = new ArrayList<>();
     private ArrayList<BarEntry> outputdata = new ArrayList<>();
     private ArrayList<Entry> kgdatas = new ArrayList<>();
-    private ImageButton add;
-    private TextView intake, output, weightday, header, nyreg;
+    private MaterialButton add;
+    private TextView intake, output, weightday, patient, bed;
     private XAxis xAxisml, xAxiskg;
     private BarChart graphml;
     private LineChart graphkg;
     private BarData bardata;
     private LineData kgdata;
-    private Calendar cal;
     private Typeface font;
     private DecimalFormat df;
     private Bundle b = new Bundle();
@@ -62,16 +60,19 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_graphfragment, container, false);
         font = Typeface.createFromAsset(getActivity().getAssets(), "font/Helvetica.ttf");
-        header = view.findViewById(R.id.bedheader);
+
         temp = getArguments().getString("Id");
         pat = MainActivity.patientsHashmap.get(temp);
         b.putString("Id", temp);
-        header.setText("Seng " + pat.getBedNum() + ", " + pat.getName());
-        nyreg = view.findViewById(R.id.nyreg);
-        nyreg.setTypeface(font);
         df = new DecimalFormat("#.##");
+        patient = view.findViewById(R.id.getname);
+        patient.setTypeface(font);
+        patient.setText(pat.getName());
+        bed = view.findViewById(R.id.getbed);
 
-        cal = Calendar.getInstance();
+        bed.setTypeface(font);
+        bed.setText(pat.getBedNum() + "");
+
         graphml = view.findViewById(R.id.graphholder);
         intake = view.findViewById(R.id.intake);
         intake.setTypeface(font);
@@ -82,6 +83,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         weightday.setTypeface(font);
         graphkg = view.findViewById(R.id.chartkg);
         add = view.findViewById(R.id.plusbut);
+        add.setTypeface(font);
         add.setOnClickListener(this);
 
 
@@ -164,7 +166,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
         BarDataSet mlset2 = new BarDataSet(outputdata, "  I ml");
         mlset2.setStackLabels(new String[]{"Urin", "Afføring"});
-        mlset2.setColors(ColorTemplate.rgb("FFFFCC80"), ColorTemplate.rgb("FFF57F17"));
+        mlset2.setColors(ColorTemplate.rgb("215981"), ColorTemplate.rgb("90caf9"));
 
         bardata = new BarData(mlset, mlset2);
         bardata.setValueTextSize(16f);
@@ -173,7 +175,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphml.setData(bardata);
         xAxisml = graphml.getXAxis();
         xAxisml.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Intake")));
-        xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+        xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxisml.setCenterAxisLabels(true);
         xAxisml.setGranularity(1f);
         xAxisml.setSpaceMax(1.1f);
@@ -185,11 +187,11 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphml.getAxisRight().setEnabled(false);
         graphml.setOnChartValueSelectedListener(this);
         graphml.setVisibleXRangeMaximum(7);
-        graphml.setExtraTopOffset(10);
+        graphml.setExtraBottomOffset(20);
         graphml.getAxisRight().setDrawGridLines(false);
         graphml.getAxisLeft().setTextSize(20);
         graphml.getAxisLeft().setDrawGridLines(false);
-        //  xAxisml.setDrawGridLines(false);
+        xAxisml.setDrawGridLines(false);
         graphml.getDescription().setPosition(195f, 670f);
         Legend l = graphml.getLegend();
         l.setTextSize(18);
@@ -203,6 +205,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphml.groupBars(0f, 0.2f, 0f);
         graphml.centerViewTo(mldata.size(), 1f, YAxis.AxisDependency.RIGHT);
         graphml.highlightValue(mldata.size(), 0);
+
         if (AppData.ani) {
             graphml.animateY(1500);
             AppData.ani = true;
@@ -236,22 +239,21 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg.setMarker(markoer);
         graphkg.getDescription().setEnabled(false);
         xAxiskg = graphkg.getXAxis();
-        xAxiskg.setCenterAxisLabels(true);
-        xAxiskg.setSpaceMax(1.1f);
+        xAxiskg.setSpaceMax(0.5f);
         xAxiskg.setSpaceMin(0.1f);
-        xAxiskg.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+        xAxiskg.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxiskg.setTextSize(18);
-        graphkg.setExtraTopOffset(10);
+        graphkg.setExtraBottomOffset(28);
         graphkg.getAxisLeft().setSpaceBottom(30);
         graphkg.getAxisLeft().setSpaceTop(30);
         graphkg.getAxisRight().setDrawGridLines(false);
         graphkg.getAxisLeft().setDrawGridLines(false);
-        //   xAxiskg.setDrawGridLines(false);
+        xAxiskg.setDrawGridLines(false);
         xAxiskg.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Weight")));
         xAxiskg.setGranularity(1f);
         graphkg.setOnChartValueSelectedListener(this);
         graphkg.getAxisLeft().setTextSize(20);
-        graphkg.setVisibleXRangeMaximum(7);
+        graphkg.setVisibleXRangeMaximum(3);
         graphkg.setTouchEnabled(true);
         graphkg.setDrawBorders(true);
         Legend l = graphkg.getLegend();
