@@ -84,13 +84,15 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="32dp" />
 
-        <Button
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/ny"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:background="@color/colorPrimaryDark"
-            android:textSize="18sp"
+            android:gravity="center_horizontal"
+            android:padding="8dp"
+            app:autoSizeTextType="uniform"
             android:text="Tilføj Seng"
             android:visibility="visible" />
 

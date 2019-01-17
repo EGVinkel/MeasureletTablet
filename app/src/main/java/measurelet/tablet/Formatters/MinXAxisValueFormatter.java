@@ -1,4 +1,5 @@
-package measurelet.tablet;
+package measurelet.tablet.Formatters;
+
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
@@ -13,6 +14,7 @@ public class MinXAxisValueFormatter implements IAxisValueFormatter {
 
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
+
         try {
             int index = (int) value;
             return String.valueOf(datoer.get(index));

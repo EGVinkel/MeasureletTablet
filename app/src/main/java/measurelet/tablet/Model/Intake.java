@@ -1,13 +1,16 @@
 package measurelet.tablet.Model;
 
-import java.util.Date;
+import com.google.firebase.database.Exclude;
+
+import org.threeten.bp.LocalDateTime;
+
 import java.util.UUID;
 
 public class Intake {
     public String uuid;
     private String type;
     private int size;
-    private Date timestamp;
+    private String timestamp;
 
     public Intake() {
 
@@ -17,14 +20,7 @@ public class Intake {
         this.uuid = UUID.randomUUID().toString();
         this.type = type;
         this.size = size;
-        this.timestamp = new Date();
-    }
-
-    public Intake(String uuid, String type, int size, Date date) {
-        this.uuid = uuid;
-        this.type = type;
-        this.size = size;
-        this.timestamp = date;
+        this.timestamp = LocalDateTime.now().toString();
     }
 
 
@@ -52,11 +48,16 @@ public class Intake {
         this.size = size;
     }
 
-    public Date getTimestamp() {
+    @Exclude
+    public LocalDateTime getDateTime() {
+        return LocalDateTime.parse(timestamp);
+    }
+
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 }

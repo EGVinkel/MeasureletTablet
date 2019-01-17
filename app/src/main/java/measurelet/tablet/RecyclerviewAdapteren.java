@@ -2,7 +2,6 @@ package measurelet.tablet;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import java.util.ArrayList;
+
 import androidx.navigation.NavController;
 import measurelet.tablet.Model.Patient;
 
@@ -22,7 +23,6 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
     private NavController navC;
     private RecyclerView re;
     private Typeface font;
-    private Bundle bund;
     private Context con;
     private int prevpos;
     private ArrayList<Patient> bedlist;
@@ -34,11 +34,10 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
         this.prevpos = prevpos;
     }
 
-    public RecyclerviewAdapteren(ArrayList<Patient> beds,RecyclerView re, NavController nav, Typeface font, Bundle bundle, Context coni) {
+    public RecyclerviewAdapteren(ArrayList<Patient> beds, RecyclerView re, NavController nav, Typeface font, Context coni) {
         this.re=re;
         this.navC=nav;
         this.font=font;
-        this.bund=bundle;
         this.con=coni;
         this.bedlist=beds;
 
@@ -64,17 +63,17 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
         }
         setPrevpos(itemPosition);
         if (!bedlist.isEmpty()) {
-            bund.putString("Id",bedlist.get(itemPosition).getUuid());
+            AppData.theb.putString("Id", bedlist.get(itemPosition).getUuid());
             Graphfragment graph = new Graphfragment();
-            graph.setArguments(bund);
+            graph.setArguments(AppData.theb);
 
 
             if (itemPosition < prev) {
 
-                navC.navigate(R.id.action_enterleft,bund);
+                navC.navigate(R.id.action_enterleft, AppData.theb);
             }
             if (itemPosition >= prev) {
-                navC.navigate(R.id.action_enterright,bund);
+                navC.navigate(R.id.action_enterright, AppData.theb);
 
             }
         }
