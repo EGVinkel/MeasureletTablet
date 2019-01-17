@@ -16,6 +16,7 @@ import measurelet.tablet.Model.Patient;
 public class AppData extends Application {
 
     public static Bundle theb = new Bundle();
+    public static boolean ani = false;
     private FirebaseDatabase DB_INSTANCE;
     public static DatabaseReference DB_REFERENCE;
     //public static List<String> patientID= new ArrayList<>();

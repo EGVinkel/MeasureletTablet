@@ -3,13 +3,11 @@ package measurelet.tablet;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -47,7 +45,7 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
     //On click for changing bed.
     @Override
     public void onClick(View view) {
-
+        AppData.ani = true;
 
         int itemPosition = re.getChildLayoutPosition(view);
 
@@ -83,11 +81,27 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
 
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
+        myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBedNum());
+
+        myViewHolder.bind(position);
+    }
+
+
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listlayout, viewGroup, false);
+        v.setOnClickListener(this);
+
+        return new MyViewHolder(v);
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView bednumber;
         private CheckBox checker;
-        private ImageButton delete;
+
 
         private MyViewHolder(View v) {
             super(v);
@@ -95,8 +109,6 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
             bednumber.setTypeface(font);
             checker = v.findViewById(R.id.bedcheck);
             checker.setOnClickListener(this);
-            delete= v.findViewById(R.id.deletebutton);
-            delete.setOnClickListener(this);
 
 
         }
@@ -115,7 +127,16 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
                     bedlist.get(positionen).setChecked(false);
                 }
             }
-            if(view==delete){
+
+
+
+
+
+
+
+
+
+            /*if(view==delete){
                 final AlertDialog.Builder builder = new AlertDialog.Builder(con);
                 builder.setTitle("Er du sikker på du vil slette?");
                 builder.setCancelable(true);
@@ -131,7 +152,7 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
                 });
                 builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
                 builder.show();
-            }
+            }*/
 
         }
 
@@ -144,22 +165,6 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
             }
 
         }
-    }
-
-
-    @NonNull
-    @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listlayout, viewGroup, false);
-        v.setOnClickListener(this);
-
-        return new MyViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
-        myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBedNum());
-        myViewHolder.bind(position);
     }
 
 

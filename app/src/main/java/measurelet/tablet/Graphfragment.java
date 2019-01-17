@@ -189,7 +189,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphml.getAxisRight().setDrawGridLines(false);
         graphml.getAxisLeft().setTextSize(20);
         graphml.getAxisLeft().setDrawGridLines(false);
-        xAxisml.setDrawGridLines(false);
+        //  xAxisml.setDrawGridLines(false);
         graphml.getDescription().setPosition(195f, 670f);
         Legend l = graphml.getLegend();
         l.setTextSize(18);
@@ -203,7 +203,11 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphml.groupBars(0f, 0.2f, 0f);
         graphml.centerViewTo(mldata.size(), 1f, YAxis.AxisDependency.RIGHT);
         graphml.highlightValue(mldata.size(), 0);
-        graphml.animateY(1500);
+        if (AppData.ani) {
+            graphml.animateY(1500);
+            AppData.ani = true;
+        }
+
         graphml.invalidate();
 
     }
@@ -232,22 +236,22 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg.setMarker(markoer);
         graphkg.getDescription().setEnabled(false);
         xAxiskg = graphkg.getXAxis();
-        xAxiskg.setSpaceMax(0.5f);
-        xAxiskg.setSpaceMin(0.3f);
+        xAxiskg.setCenterAxisLabels(true);
+        xAxiskg.setSpaceMax(1.1f);
+        xAxiskg.setSpaceMin(0.1f);
         xAxiskg.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
         xAxiskg.setTextSize(18);
         graphkg.setExtraTopOffset(10);
         graphkg.getAxisLeft().setSpaceBottom(30);
         graphkg.getAxisLeft().setSpaceTop(30);
-        graphkg.getAxis(YAxis.AxisDependency.LEFT).setGranularity(1);
         graphkg.getAxisRight().setDrawGridLines(false);
         graphkg.getAxisLeft().setDrawGridLines(false);
-        xAxiskg.setDrawGridLines(false);
+        //   xAxiskg.setDrawGridLines(false);
         xAxiskg.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Weight")));
         xAxiskg.setGranularity(1f);
         graphkg.setOnChartValueSelectedListener(this);
         graphkg.getAxisLeft().setTextSize(20);
-        graphkg.setVisibleXRangeMaximum(3);
+        graphkg.setVisibleXRangeMaximum(7);
         graphkg.setTouchEnabled(true);
         graphkg.setDrawBorders(true);
         Legend l = graphkg.getLegend();

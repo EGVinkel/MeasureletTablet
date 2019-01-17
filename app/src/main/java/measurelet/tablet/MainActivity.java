@@ -52,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         navC = Navigation.findNavController(findViewById(R.id.nav_host));
 
         add = findViewById(R.id.ny);
+        add.setTypeface(font);
         clear = findViewById(R.id.checkall);
+        clear.setTypeface(font);
         clear.setOnClickListener(this);
         add.setOnClickListener(this);
         re = findViewById(R.id.bedlist);
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mAdapter = new RecyclerviewAdapteren(patientArrayList, re, navC, font, con);
                 re.setAdapter(mAdapter);
                 if (navC.getCurrentDestination().getId() == R.id.graphfragment) {
-
+                    AppData.ani = false;
                     navC.navigate(R.id.graphfragment, AppData.theb);
                 }
 
