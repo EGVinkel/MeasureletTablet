@@ -144,7 +144,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.65" />
 
-    <com.github.mikephil.charting.charts.BarChart
+    <com.github.mikephil.charting.charts.CombinedChart
         android:id="@+id/graphholder"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerImage;
@@ -21,6 +22,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -46,7 +48,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private ImageButton add;
     private TextView intake, output, weightday, header, nyreg;
     private XAxis xAxisml, xAxiskg;
-    private BarChart graphml;
+    private CombinedChart graphml;
     private LineChart graphkg;
     private BarData bardata;
     private LineData kgdata;
@@ -98,7 +100,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         }
         //Precautions to avoid crashing when no regs have been made
         if (!MainActivity.patientsHashmap.get(temp).getWeights().isEmpty()) {
-            createkggraph();
+         //   createkggraph();
         }
         if (!MainActivity.patientsHashmap.get(temp).getRegistrations().isEmpty()) {
             createmlgraph();
@@ -119,7 +121,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     @Override
     public void onValueSelected(Entry e, Highlight h) {
 
-        intake.setText((int) mldata.get((int) e.getX()).getY() + "ml ");
+      /*  intake.setText((int) mldata.get((int) e.getX()).getY() + "ml ");
         output.setText((int) outputdata.get((int) e.getX()).getY() + "ml ");
         graphml.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
         graphml.highlightValue(h);
@@ -136,13 +138,12 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
             }
             graphkg.highlightValue(h);
-        }
+        }*/
 
     }
 
     @Override
     public void onNothingSelected() {
-        graphkg.highlightValue(null);
         graphml.highlightValue(null);
     }
 
@@ -158,51 +159,84 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
 
     public void createmlgraph() {
+
+        //kg data
+        LineDataSet kgset = new LineDataSet(kgdatas, "Vægt (kg)");
+        kgset.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        kgset.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        kgset.setLineWidth(4f);
+        kgset.setHighlightLineWidth(3f);
+        kgset.setHighLightColor(Color.BLUE);
+        kgset.setCircleRadius(6);
+        kgset.setDrawHighlightIndicators(false);
+        kgset.setValueTextSize(16f);
+        kgdata= new LineData(kgset);
+
+        //ml data
         BarDataSet mlset = new BarDataSet(mldata, "");
         mlset.setStackLabels(new String[]{"pr. OS", "IV"});
         mlset.setColors(ColorTemplate.rgb("b3e5fc"), ColorTemplate.rgb("FF64B5F6"));
-
         BarDataSet mlset2 = new BarDataSet(outputdata, "  I ml");
         mlset2.setStackLabels(new String[]{"Urin", "Afføring"});
         mlset2.setColors(ColorTemplate.rgb("FFFFCC80"), ColorTemplate.rgb("FFF57F17"));
-
         bardata = new BarData(mlset, mlset2);
         bardata.setValueTextSize(16f);
         bardata.setValueFormatter(new Valueformatter(0));
         bardata.setBarWidth(0.4f);
-        graphml.setData(bardata);
+        bardata.groupBars(0f, 0.2f, 0f);
+
+
+
+        //Combine the data  and set
+        CombinedData combi = new CombinedData();
+        combi.setValueFormatter(new Valueformatter(0));
+        combi.setData(kgdata);
+        combi.setData(bardata);
+        graphml.setData(combi);
+
+        //x axis adjustments
         xAxisml = graphml.getXAxis();
-        xAxisml.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Intake")));
-        xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+        if(GraphDataFactory.dateSorter(temp, "Intake").size()>=GraphDataFactory.dateSorter(temp, "Weight").size()){
+            xAxisml.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Intake")));
+        }
+        if(GraphDataFactory.dateSorter(temp, "Intake").size()<GraphDataFactory.dateSorter(temp, "Weight").size()){
+            xAxisml.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Weight")));
+        }
+
+        xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxisml.setCenterAxisLabels(true);
         xAxisml.setGranularity(1f);
-        xAxisml.setSpaceMax(1.1f);
-        xAxisml.setSpaceMin(0.1f);
+        xAxisml.setSpaceMax(0.3f);
+        xAxisml.setSpaceMin(0.3f);
         xAxisml.setTextSize(20);
+        xAxisml.setDrawGridLines(false);
+
+
+
+        graphml.getDescription().setEnabled(false);
         graphml.setDoubleTapToZoomEnabled(false);
         graphml.setTouchEnabled(true);
         graphml.getDescription().setEnabled(false);
-        graphml.getAxisRight().setEnabled(false);
-        graphml.setOnChartValueSelectedListener(this);
-        graphml.setVisibleXRangeMaximum(7);
-        graphml.setExtraTopOffset(10);
+       // graphml.setOnChartValueSelectedListener(this);
+        graphml.setVisibleXRangeMaximum(3);
+        graphml.setExtraBottomOffset(10);
         graphml.getAxisRight().setDrawGridLines(false);
         graphml.getAxisLeft().setTextSize(20);
+        graphml.getAxisRight().setTextSize(20);
         graphml.getAxisLeft().setDrawGridLines(false);
-        //  xAxisml.setDrawGridLines(false);
         graphml.getDescription().setPosition(195f, 670f);
+
         Legend l = graphml.getLegend();
         l.setTextSize(18);
         l.setFormSize(18);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        graphml.setHighlightFullBarEnabled(true);
         graphml.setDrawBorders(true);
         graphml.getDescription().setTypeface(font);
         graphml.getDescription().setTextSize(24);
-        graphml.groupBars(0f, 0.2f, 0f);
         graphml.centerViewTo(mldata.size(), 1f, YAxis.AxisDependency.RIGHT);
-        graphml.highlightValue(mldata.size(), 0);
+
+
         if (AppData.ani) {
             graphml.animateY(1500);
             AppData.ani = true;
@@ -212,30 +246,13 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
     }
 
-    public void createkggraph() {
+    /*public void createkggraph() {
 
 
-        kgdata = new LineData();
-        LineDataSet kgset = new LineDataSet(kgdatas, "Vægt (kg)");
-        kgset.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        kgset.setLineWidth(4f);
-        kgset.setHighlightLineWidth(3f);
-        kgset.setHighLightColor(Color.BLUE);
-        kgset.setCircleRadius(6);
-        kgset.setDrawHighlightIndicators(false);
-        kgdata.addDataSet(kgset);
-        graphkg.setDoubleTapToZoomEnabled(false);
-        kgdata.setValueTextSize(16f);
-        graphkg.setData(kgdata);
-        MarkerImage markoer = new MarkerImage(getActivity(), R.drawable.ic_lens_black_24dp);
-        graphkg.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        Point size = new Point();
-        getActivity().getWindowManager().getDefaultDisplay().getRealSize(size);
-        float offx = ((size.x * 0.7f) * 0.65f) / 48;
-        markoer.setOffset(-offx, -offx);
-        graphkg.setMarker(markoer);
-        graphkg.getDescription().setEnabled(false);
-        xAxiskg = graphkg.getXAxis();
+
+
+
+        xAxisml = graphml.getXAxis();
         xAxiskg.setCenterAxisLabels(true);
         xAxiskg.setSpaceMax(1.1f);
         xAxiskg.setSpaceMin(0.1f);
@@ -264,7 +281,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg.invalidate();
 
 
-    }
+    }*/
 
 }
 
