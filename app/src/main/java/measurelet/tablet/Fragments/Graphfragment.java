@@ -1,11 +1,13 @@
-package measurelet.tablet;
+package measurelet.tablet.Fragments;
 
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -29,12 +31,17 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import measurelet.tablet.AppData;
 import measurelet.tablet.Factories.GraphDataFactory;
 import measurelet.tablet.Formatters.MinXAxisValueFormatter;
 import measurelet.tablet.Formatters.Valueformatter;
+import measurelet.tablet.MainActivity;
 import measurelet.tablet.Model.Patient;
+import measurelet.tablet.R;
 
 
 public class Graphfragment extends Fragment implements View.OnClickListener, OnChartValueSelectedListener {
@@ -43,13 +50,12 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private ArrayList<BarEntry> outputdata = new ArrayList<>();
     private ArrayList<Entry> kgdatas = new ArrayList<>();
     private MaterialButton add;
-    private TextView intake, output, weightday, patient, bed;
+    private TextView intake, output, weightday, patient, bed, dif;
     private XAxis xAxisml, xAxiskg;
     private BarChart graphml;
     private LineChart graphkg;
     private BarData bardata;
     private LineData kgdata;
-    private Typeface font;
     private DecimalFormat df;
     private Bundle b = new Bundle();
     private Patient pat;
@@ -59,51 +65,51 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_graphfragment, container, false);
-        font = Typeface.createFromAsset(getActivity().getAssets(), "font/Helvetica.ttf");
+
+        setHasOptionsMenu(true);
+        setMenuVisibility(true);
 
         temp = getArguments().getString("Id");
         pat = MainActivity.patientsHashmap.get(temp);
         b.putString("Id", temp);
         df = new DecimalFormat("#.##");
         patient = view.findViewById(R.id.getname);
-        patient.setTypeface(font);
         patient.setText(pat.getName());
         bed = view.findViewById(R.id.getbed);
-
-        bed.setTypeface(font);
         bed.setText(pat.getBedNum() + "");
+        dif = view.findViewById(R.id.dif);
 
         graphml = view.findViewById(R.id.graphholder);
         intake = view.findViewById(R.id.intake);
-        intake.setTypeface(font);
         output = view.findViewById(R.id.output);
-        output.setTypeface(font);
 
         weightday = view.findViewById(R.id.kgdata);
-        weightday.setTypeface(font);
         graphkg = view.findViewById(R.id.chartkg);
         add = view.findViewById(R.id.plusbut);
-        add.setTypeface(font);
         add.setOnClickListener(this);
 
 
         //get databasedata
         kgdatas = GraphDataFactory.getKgEntries(temp);
         mldata = GraphDataFactory.getMlEntries(temp);
-        //Create dummy output data, using a while loop to avoid graphs being drawn before the outputdata is done, should probably be changed, but pending if we are going to take output data into acount or not.
-        Boolean wait = true;
-        while (wait) {
-            createdata();
-            if (outputdata.size() == mldata.size()) {
-                wait = false;
-            }
-        }
+
+
         //Precautions to avoid crashing when no regs have been made
         if (!MainActivity.patientsHashmap.get(temp).getWeights().isEmpty()) {
             createkggraph();
         }
         if (!MainActivity.patientsHashmap.get(temp).getRegistrations().isEmpty()) {
+            //Ugly but functional solution to avoid graph being drawn before dummy data is created;
+            Boolean wait = true;
+            while (wait) {
+                createdata();
+                if (!outputdata.isEmpty()) {
+                    wait = false;
+                }
+            }
             createmlgraph();
+
+
         }
 
 
@@ -114,15 +120,22 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     @Override
     public void onClick(View view) {
         if (view == add) {
-            NavHostFragment.findNavController(this).navigate(R.id.action_graphfragment_to_dialogFragment, b);
+            DialogFragment dialog = new MyDialogFragment();
+            dialog.setArguments(b);
+            dialog.show(getFragmentManager(), "dialog");
+
         }
     }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
+        int tempin = (int) mldata.get((int) e.getX()).getY();
+        int tempout = (int) outputdata.get((int) e.getX()).getY();
 
-        intake.setText((int) mldata.get((int) e.getX()).getY() + "ml ");
-        output.setText((int) outputdata.get((int) e.getX()).getY() + "ml ");
+
+        intake.setText(tempin + "ml ");
+        output.setText(tempout + "ml ");
+        dif.setText((tempin - tempout) + "ml ");
         graphml.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
         graphml.highlightValue(h);
 
@@ -186,7 +199,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphml.getDescription().setEnabled(false);
         graphml.getAxisRight().setEnabled(false);
         graphml.setOnChartValueSelectedListener(this);
-        graphml.setVisibleXRangeMaximum(7);
+        graphml.setVisibleXRangeMaximum(5);
         graphml.setExtraBottomOffset(20);
         graphml.getAxisRight().setDrawGridLines(false);
         graphml.getAxisLeft().setTextSize(20);
@@ -199,8 +212,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         graphml.setHighlightFullBarEnabled(true);
-        graphml.setDrawBorders(true);
-        graphml.getDescription().setTypeface(font);
+        //graphml.setDrawBorders(true);
         graphml.getDescription().setTextSize(24);
         graphml.groupBars(0f, 0.2f, 0f);
         graphml.centerViewTo(mldata.size(), 1f, YAxis.AxisDependency.RIGHT);
@@ -238,6 +250,8 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         markoer.setOffset(-offx, -offx);
         graphkg.setMarker(markoer);
         graphkg.getDescription().setEnabled(false);
+  /*      graphkg.getAxisLeft().setAxisMaximum(50);
+        graphkg.getAxisLeft().setAxisMinimum(100);*/
         xAxiskg = graphkg.getXAxis();
         xAxiskg.setSpaceMax(0.5f);
         xAxiskg.setSpaceMin(0.1f);
@@ -255,22 +269,46 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg.getAxisLeft().setTextSize(20);
         graphkg.setVisibleXRangeMaximum(3);
         graphkg.setTouchEnabled(true);
-        graphkg.setDrawBorders(true);
+        // graphkg.setDrawBorders(true);
         Legend l = graphkg.getLegend();
         l.setTextSize(18);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setFormSize(18);
         graphkg.getAxisRight().setEnabled(false);
-        graphkg.getDescription().setTypeface(font);
         graphkg.invalidate();
 
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.deletebed) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Er du sikker på du vil slette?");
+            builder.setCancelable(true);
+            builder.setPositiveButton("OK", (dialog, which) -> {
+
+                AppData.DB_REFERENCE.child("patients").child(temp).removeValue();
+                NavHostFragment.findNavController(this).navigate(R.id.startFragment);
+
+
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.show();
+
+        }
+
+
+        return false;
+    }
+
 }
-
-
-
-
 

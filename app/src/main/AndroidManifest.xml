@@ -5,9 +5,9 @@
     <application
         android:name=".AppData"
         android:allowBackup="true"
-        android:icon="@mipmap/logo_measur"
+        android:icon="@drawable/ic_measureletlogo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/logo_measur_round"
+        android:roundIcon="@drawable/ic_measureletlogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"

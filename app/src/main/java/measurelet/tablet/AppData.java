@@ -8,21 +8,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import measurelet.tablet.Model.Patient;
-
 public class AppData extends Application {
 
     public static Bundle theb = new Bundle();
     public static boolean ani = false;
     private FirebaseDatabase DB_INSTANCE;
     public static DatabaseReference DB_REFERENCE;
-    //public static List<String> patientID= new ArrayList<>();
-    public static List<Patient> patientlist = new ArrayList<>();
-    public static DatabaseReference patientRef;
-    public static DatabaseReference intakeRef;
 
     @Override
     public void onCreate() {
@@ -30,6 +21,7 @@ public class AppData extends Application {
         AndroidThreeTen.init(this);
         // Required initialization logic here!
                 createAppDatabase();
+
     }
 
     public DatabaseReference createAppDatabase() {

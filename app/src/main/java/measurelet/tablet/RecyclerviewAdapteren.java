@@ -1,7 +1,6 @@
 package measurelet.tablet;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
+import measurelet.tablet.Fragments.Graphfragment;
 import measurelet.tablet.Model.Patient;
 
 public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdapteren.MyViewHolder> implements View.OnClickListener {
@@ -20,7 +20,6 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
     private boolean sortani = true;
     private NavController navC;
     private RecyclerView re;
-    private Typeface font;
     private Context con;
     private int prevpos;
     private ArrayList<Patient> bedlist;
@@ -32,10 +31,9 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
         this.prevpos = prevpos;
     }
 
-    public RecyclerviewAdapteren(ArrayList<Patient> beds, RecyclerView re, NavController nav, Typeface font, Context coni) {
+    public RecyclerviewAdapteren(ArrayList<Patient> beds, RecyclerView re, NavController nav, Context coni) {
         this.re=re;
         this.navC=nav;
-        this.font=font;
         this.con=coni;
         this.bedlist=beds;
 
@@ -106,7 +104,6 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
         private MyViewHolder(View v) {
             super(v);
             bednumber = v.findViewById(R.id.bedview);
-            bednumber.setTypeface(font);
             checker = v.findViewById(R.id.bedcheck);
             checker.setOnClickListener(this);
 
@@ -127,32 +124,6 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
                     bedlist.get(positionen).setChecked(false);
                 }
             }
-
-
-
-
-
-
-
-
-
-            /*if(view==delete){
-                final AlertDialog.Builder builder = new AlertDialog.Builder(con);
-                builder.setTitle("Er du sikker på du vil slette?");
-                builder.setCancelable(true);
-                builder.setPositiveButton("OK", (dialog, which) -> {
-
-                    bedlist.remove(positionen);
-                    notifyItemRemoved(positionen);
-                    notifyItemRangeChanged(positionen, bedlist.size());
-                    navC.navigate(R.id.action_global_startFragment);
-
-
-
-                });
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-                builder.show();
-            }*/
 
         }
 

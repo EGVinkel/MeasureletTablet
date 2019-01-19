@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/background_color</item>
+        <item name="android:actionOverflowButtonStyle">@style/SettingsIcon</item>
     </style>
 
 
@@ -21,6 +22,17 @@
         <item name="android:minHeight">52dp</item>
         <item name="android:textSize">15sp</item>
         <item name="cornerRadius">32dp</item>
+    </style>
+
+
+    <style name="SettingsIcon" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_settings</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/colorAccent</item>
     </style>
 
 </resources>

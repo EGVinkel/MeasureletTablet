@@ -26,7 +26,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         app:navGraph="@navigation/nav_graph">
 
     </fragment>
@@ -46,7 +46,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="58dp"
         android:layout_marginEnd="8dp"
-        android:paddingTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
         android:paddingBottom="5dp"
         app:cardBackgroundColor="@color/material_card_view_color"
         app:cardElevation="3dp"
@@ -55,32 +56,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/ny"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_margin="10dp"
-            android:text="Tilføj ny seng"
-            android:textAlignment="center"
-            android:textColor="@color/background_color" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/bedlist"
-            android:layout_width="match_parent"
-            android:layout_height="506dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="0.5"
-            android:autoSizeTextType="uniform"
-            android:clipChildren="true"
-            android:clipToPadding="true"
-            android:elevation="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline17"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView2"
+                style="@style/Widget.MaterialComponents.CardView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="0.2dp"
+                android:layout_marginEnd="1dp"
+                android:layout_weight="6"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="0.3dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="false"
+                app:layout_constraintBottom_toTopOf="@+id/guideline17"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/Recycler_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Senge"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="30dp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="232dp"
+                    tools:layout_editor_absoluteY="261dp" />
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bedlist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="0.5"
+                android:autoSizeTextType="uniform"
+                android:clipChildren="true"
+                android:clipToPadding="true"
+                android:elevation="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline17"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
 
@@ -91,34 +121,53 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.2" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_measureletlogo" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/checkall"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="30dp"
-        android:elevation="10dp"
-        android:text="Fjern markeringer"
+        android:layout_marginBottom="18dp"
+        android:text="Fjern markører"
         android:textAlignment="center"
         android:textColor="@color/background_color"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline20"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline17"
-        app:layout_constraintVertical_bias="0.315" />
+        app:layout_constraintTop_toTopOf="@+id/guideline12"
+        app:layout_constraintVertical_bias="0.642" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ny"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Tilføj ny seng"
+        android:textAlignment="center"
+        android:textColor="@color/background_color"
+        app:layout_constraintBottom_toTopOf="@+id/guideline12"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline17" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.925" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline20"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

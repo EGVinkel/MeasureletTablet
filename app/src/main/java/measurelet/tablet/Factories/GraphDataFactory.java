@@ -27,22 +27,35 @@ public class GraphDataFactory {
         DateTimeFormatter formate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         for (Intake intake : currentpatient.getRegistrations()) {
             int ml = 0;
+            int mliv = 0;
             for (String s : dateSorter(id, "Intake")) {
                 if (!registrationsDateMap.containsKey(s) && formate.format(intake.getDateTime()).equals(s)) {
                     ml = intake.getSize();
                 }
+                if (!IVregistrationsDateMap.containsKey(s) && formate.format(intake.getDateTime()).equals(s)) {
+                    mliv = intake.getSize();
+                }
 
             }
+
             if (registrationsDateMap.containsKey(formate.format(intake.getDateTime()))) {
                 ml = intake.getSize() + registrationsDateMap.get(formate.format(intake.getDateTime()));
             }
+            if (IVregistrationsDateMap.containsKey(formate.format(intake.getDateTime()))) {
+                mliv = intake.getSize() + IVregistrationsDateMap.get(formate.format(intake.getDateTime()));
+            }
+
+
+
             if (intake.getType().equalsIgnoreCase("Iv")) {
-                IVregistrationsDateMap.put(formate.format((intake.getDateTime())), intake.getSize());
+                IVregistrationsDateMap.put(formate.format((intake.getDateTime())), mliv);
 
             } else if (!intake.getType().equalsIgnoreCase("Iv")) {
                 registrationsDateMap.put(formate.format((intake.getDateTime())), ml);
             }
         }
+
+
         for (int i = 0; i < dateSorter(id, "Intake").size(); i++) {
             if (IVregistrationsDateMap.get(dateSorter(id, "Intake").get(i)) == null) {
                 IVregistrationsDateMap.put(dateSorter(id, "Intake").get(i), 0);
@@ -89,9 +102,7 @@ public class GraphDataFactory {
         if (type.equals("Weight")) {
             ArrayList<Weight> currentpatientRegistrations = currentpatient.getWeights();
             for (Weight weight : currentpatientRegistrations) {
-                if (!(dates.contains(formate.format(weight.getDatetime())))) {
-                    dates.add(formate.format(weight.getDatetime()));
-                }
+                dates.add(formate.format(weight.getDatetime()));
 
             }
 

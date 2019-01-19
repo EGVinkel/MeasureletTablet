@@ -7,18 +7,18 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="measurelet.tablet.StartFragment"
+        android:name="measurelet.tablet.Fragments.StartFragment"
         android:label="fragment_start"
         tools:layout="@layout/fragment_start" />
     <fragment
         android:id="@+id/graphfragment"
-        android:name="measurelet.tablet.Graphfragment"
+        android:name="measurelet.tablet.Fragments.Graphfragment"
         android:label="fragment_graphfragment"
         tools:layout="@layout/fragment_graphfragment" >
     </fragment>
     <fragment
         android:id="@+id/dialogFragment"
-        android:name="measurelet.tablet.MyDialogFragment"
+        android:name="measurelet.tablet.Fragments.MyDialogFragment"
         android:label="fragment_dialog"
         tools:layout="@layout/fragment_dialog" />
     <action android:id="@+id/action_global_startFragment"
@@ -51,9 +51,13 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-
-
-
+    <action
+        android:id="@+id/fadegraph"
+        app:destination="@id/graphfragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_enter_anim"
+        app:popExitAnim="@anim/nav_default_exit_anim" />
 
 
 </navigation>

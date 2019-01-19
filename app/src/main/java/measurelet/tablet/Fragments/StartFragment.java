@@ -1,4 +1,4 @@
-package measurelet.tablet;
+package measurelet.tablet.Fragments;
 
 
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import measurelet.tablet.R;
 
 public class StartFragment extends Fragment {
 
