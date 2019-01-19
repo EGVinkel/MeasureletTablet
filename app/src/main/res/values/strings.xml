@@ -2,5 +2,20 @@
     <string name="app_name">Measurelet-Tablet</string>
     <string name="tilføj">Tilføj</string>
     <string name="measurelet">MEASURELET</string>
-
+    <string name="deletebed">Slet seng</string>
+    <string name="beds">Senge</string>
+    <string name="fjern">Fjern markører</string>
+    <string name="tilf_j_ny_seng">Tilføj ny seng</string>
+    <string name="v_skeregistrering">Væskeregistrering</string>
+    <string name="v_sketype">Væsketype</string>
+    <string name="m_ngde">Mængde</string>
+    <string name="timer">Timer</string>
+    <string name="ny_registrering">Ny Registrering</string>
+    <string name="seng">Seng</string>
+    <string name="navn">Navn</string>
+    <string name="input">Input</string>
+    <string name="output">Output</string>
+    <string name="difference">Difference</string>
+    <string name="v_gt">Vægt</string>
+    <string name="v_lg_en_seng">Vælg en seng</string>
 </resources>

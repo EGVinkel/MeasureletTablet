@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     Patient p = childSnapshot.getValue(Patient.class);
+                    assert p != null;
                     p.getRegistrations().removeIf(Objects::isNull);
                     p.getWeights().removeIf(Objects::isNull);
                     patientsHashmap.put(p.uuid, p);
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 mAdapter = new RecyclerviewAdapteren(patientArrayList, re, navC, con);
                 re.setAdapter(mAdapter);
-                if (navC.getCurrentDestination().getId() == R.id.graphfragment) {
+                if (Objects.requireNonNull(navC.getCurrentDestination()).getId() == R.id.graphfragment) {
                     AppData.ani = false;
                     navC.navigate(R.id.fadegraph, AppData.theb);
                 }
@@ -128,8 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             final TextInputEditText inputbed = new TextInputEditText(con);
             final TextInputEditText inputname = new TextInputEditText(con);
-            final
-            int maxLength = 3;
+            final int maxLength = 3;
             inputbed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
             inputbed.setInputType(InputType.TYPE_CLASS_NUMBER);
             inputname.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             builder.setPositiveButton("OK", (dialog, which) -> {
 
-                if (inputbed.getText().length() == 0 && inputname.length() == 0) {
+                if (Objects.requireNonNull(inputbed.getText()).length() == 0 && inputname.length() == 0) {
 
 
                     Handler handler = new Handler();
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if (inputbed.getText().length() > 0 && inputname.length() > 0) {
                     this.bednumber = Integer.parseInt(inputbed.getText().toString());
-                    this.name = inputname.getText().toString();
+                    this.name = Objects.requireNonNull(inputname.getText()).toString();
 
                     Patient p = new Patient(this.name, this.bednumber);
                     AppData.DB_REFERENCE.child("patients").child(p.getUuid()).setValue(p);
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-            super.onBackPressed();
+        super.onBackPressed();
     }
 
     @Override

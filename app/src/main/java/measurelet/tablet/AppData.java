@@ -20,7 +20,7 @@ public class AppData extends Application {
         super.onCreate();
         AndroidThreeTen.init(this);
         // Required initialization logic here!
-                createAppDatabase();
+        createAppDatabase();
 
     }
 
@@ -36,7 +36,7 @@ public class AppData extends Application {
             DB_REFERENCE = DB_INSTANCE.getReference();
             Log.d("Reference", "Reference created!");
         }
-     //   DB_REFERENCE.addListenerForSingleValueEvent(update);
+        //   DB_REFERENCE.addListenerForSingleValueEvent(update);
         DB_REFERENCE.keepSynced(true);
         return DB_REFERENCE;
     }

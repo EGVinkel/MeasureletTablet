@@ -24,7 +24,4 @@ public class MinXAxisValueFormatter implements IAxisValueFormatter {
     }
 
 
-
-
-
 }

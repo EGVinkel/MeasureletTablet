@@ -7,7 +7,7 @@
     <item
         android:id="@+id/deletebed"
         android:orderInCategory="100"
-        android:title="Slet seng"
+        android:title="@string/deletebed"
 
 
         />

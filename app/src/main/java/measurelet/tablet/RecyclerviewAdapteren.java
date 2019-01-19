@@ -27,15 +27,16 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
     private int getPrevpos() {
         return prevpos;
     }
+
     private void setPrevpos(int prevpos) {
         this.prevpos = prevpos;
     }
 
-    public RecyclerviewAdapteren(ArrayList<Patient> beds, RecyclerView re, NavController nav, Context coni) {
-        this.re=re;
-        this.navC=nav;
-        this.con=coni;
-        this.bedlist=beds;
+    RecyclerviewAdapteren(ArrayList<Patient> beds, RecyclerView re, NavController nav, Context coni) {
+        this.re = re;
+        this.navC = nav;
+        this.con = coni;
+        this.bedlist = beds;
 
 
     }
@@ -81,7 +82,8 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
-        myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBedNum());
+        String placeholder = "Seng " + bedlist.get(position).getBedNum();
+        myViewHolder.bednumber.setText(placeholder);
 
         myViewHolder.bind(position);
     }
@@ -94,6 +96,14 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
         v.setOnClickListener(this);
 
         return new MyViewHolder(v);
+    }
+
+    @Override
+    public int getItemCount() {
+        if (bedlist == null) {
+            return 0;
+        }
+        return bedlist.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -109,6 +119,7 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
 
 
         }
+
         //On click for delete at marking.
         @Override
         public void onClick(View view) {
@@ -119,7 +130,7 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
                 if (!bedlist.get(positionen).getChecked()) {
                     checker.setChecked(true);
                     bedlist.get(positionen).setChecked(true);
-                } else  if (bedlist.get(positionen).getChecked()){
+                } else if (bedlist.get(positionen).getChecked()) {
                     checker.setChecked(false);
                     bedlist.get(positionen).setChecked(false);
                 }
@@ -131,20 +142,11 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
         private void bind(int position) {
             if (bedlist.get(position).getChecked()) {
                 checker.setChecked(true);
-            } else if(!bedlist.get(position).getChecked()){
+            } else if (!bedlist.get(position).getChecked()) {
                 checker.setChecked(false);
             }
 
         }
-    }
-
-
-    @Override
-    public int getItemCount() {
-        if (bedlist== null) {
-            return 0;
-        }
-        return bedlist.size();
     }
 
 }

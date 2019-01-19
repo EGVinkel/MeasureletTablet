@@ -27,7 +27,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Væskeregistrering"
+            android:text="@string/v_skeregistrering"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -58,7 +58,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="30dp" />
+                android:textSize="30sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Væsketype"
+                android:hint="@string/v_sketype"
                 android:visibility="invisible">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -93,7 +93,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Mængde">
+                android:hint="@string/m_ngde">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/amountofliquid"
@@ -109,7 +109,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Timer"
+                android:hint="@string/timer"
                 android:visibility="invisible">
 
                 <com.google.android.material.textfield.TextInputEditText
