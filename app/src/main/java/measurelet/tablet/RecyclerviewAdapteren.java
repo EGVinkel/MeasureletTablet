@@ -1,6 +1,7 @@
 package measurelet.tablet;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import measurelet.tablet.Fragments.Graphfragment;
 import measurelet.tablet.Model.Patient;
 
-public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdapteren.MyViewHolder> implements View.OnClickListener {
+public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdapteren.MyViewHolder> {
 
     private boolean sortani = true;
     private NavController navC;
@@ -23,16 +24,17 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
     private Context con;
     private int prevpos;
     private ArrayList<Patient> bedlist;
+    int selectedPosition = -1;
+
 
     private int getPrevpos() {
         return prevpos;
     }
-
     private void setPrevpos(int prevpos) {
         this.prevpos = prevpos;
     }
 
-    RecyclerviewAdapteren(ArrayList<Patient> beds, RecyclerView re, NavController nav, Context coni) {
+    public RecyclerviewAdapteren(ArrayList<Patient> beds, RecyclerView re, NavController nav, Context coni) {
         this.re = re;
         this.navC = nav;
         this.con = coni;
@@ -41,51 +43,62 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
 
     }
 
-    //On click for changing bed.
-    @Override
-    public void onClick(View view) {
-        AppData.ani = true;
-
-        int itemPosition = re.getChildLayoutPosition(view);
-
-        if (sortani) {
-            setPrevpos(-1);
-            sortani = false;
-
-        }
-        int prev = getPrevpos();
-        if (itemPosition == -1) {
-            itemPosition = itemPosition + 1;
-            setPrevpos(getPrevpos() + 1);
-        }
-        setPrevpos(itemPosition);
-        if (!bedlist.isEmpty()) {
-            AppData.theb.putString("Id", bedlist.get(itemPosition).getUuid());
-            Graphfragment graph = new Graphfragment();
-            graph.setArguments(AppData.theb);
-
-
-            if (itemPosition < prev) {
-
-                navC.navigate(R.id.action_enterleft, AppData.theb);
-            }
-            if (itemPosition >= prev) {
-                navC.navigate(R.id.action_enterright, AppData.theb);
-
-            }
-        }
-        if (bedlist.isEmpty()) {
-            navC.popBackStack();
-        }
-
-    }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
-        String placeholder = "Seng " + bedlist.get(position).getBedNum();
-        myViewHolder.bednumber.setText(placeholder);
-
+        myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBedNum());
         myViewHolder.bind(position);
+
+        if (selectedPosition == position) {
+            myViewHolder.itemView.setBackgroundColor(Color.parseColor("#406699d1"));
+        } else
+            myViewHolder.itemView.setBackgroundColor(Color.parseColor("#00000000"));
+
+        //On click for changing bed and marking
+        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedPosition = position;
+                notifyDataSetChanged();
+
+                AppData.ani = true;
+
+                int itemPosition = re.getChildLayoutPosition(view);
+
+                if (sortani) {
+                    setPrevpos(-1);
+                    sortani = false;
+
+                }
+                int prev = getPrevpos();
+                if (itemPosition == -1) {
+                    itemPosition = itemPosition + 1;
+                    setPrevpos(getPrevpos() + 1);
+                }
+                setPrevpos(itemPosition);
+                if (!bedlist.isEmpty()) {
+                    AppData.theb.putString("Id", bedlist.get(itemPosition).getUuid());
+                    Graphfragment graph = new Graphfragment();
+                    graph.setArguments(AppData.theb);
+
+
+                    if (itemPosition < prev) {
+
+                        navC.navigate(R.id.action_enterleft, AppData.theb);
+                    }
+                    if (itemPosition >= prev) {
+                        navC.navigate(R.id.action_enterright, AppData.theb);
+
+                    }
+                }
+                if (bedlist.isEmpty()) {
+                    navC.popBackStack();
+                }
+            }
+        });
+
+
+
     }
 
 
@@ -93,7 +106,7 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listlayout, viewGroup, false);
-        v.setOnClickListener(this);
+        //v.setOnClickListener(this);
 
         return new MyViewHolder(v);
     }
@@ -119,7 +132,6 @@ public class RecyclerviewAdapteren extends RecyclerView.Adapter<RecyclerviewAdap
 
 
         }
-
         //On click for delete at marking.
         @Override
         public void onClick(View view) {
