@@ -15,12 +15,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -92,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 patientArrayList.sort(Comparator.comparingInt(Patient::getBedNum));
 
-                mAdapter = new RecyclerviewAdapteren(patientArrayList, re, navC, con);
+                mAdapter = new BedRecyclerviewAdapter(patientArrayList, re, navC, con);
                 re.setAdapter(mAdapter);
                 if (Objects.requireNonNull(navC.getCurrentDestination()).getId() == R.id.graphfragment) {
                     AppData.ani = false;
@@ -126,24 +124,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(con);
             builder.setCancelable(true);
-
             final TextInputEditText inputbed = new TextInputEditText(con);
             final TextInputEditText inputname = new TextInputEditText(con);
             final int maxLength = 3;
             inputbed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
             inputbed.setInputType(InputType.TYPE_CLASS_NUMBER);
             inputname.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
             TextInputLayout tbed = new TextInputLayout(con);
+            tbed.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
             TextInputLayout tname = new TextInputLayout(con);
+            tname.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
             tname.addView(inputname);
             tbed.addView(inputbed);
             tbed.setHint("Sengenummer");
             tname.setHint("Navn");
             LinearLayout linearLayout = new LinearLayout(con);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.addView(tname);
-            linearLayout.addView(tbed);
+            LinearLayout.LayoutParams Layoutparam = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            Layoutparam.bottomMargin = 30;
+            Layoutparam.topMargin=30;
+            Layoutparam.leftMargin=30;
+            Layoutparam.rightMargin=30;
+
+            linearLayout.addView(tname,Layoutparam);
+            linearLayout.addView(tbed,Layoutparam);
             builder.setView(linearLayout);
 
             builder.setPositiveButton("OK", (dialog, which) -> {

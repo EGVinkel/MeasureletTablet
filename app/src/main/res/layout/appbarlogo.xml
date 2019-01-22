@@ -20,14 +20,17 @@
             android:id="@+id/toolbar"
 
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_gravity="start"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/measurelet"
+            app:titleMarginTop="0dp"
+            app:titleTextAppearance="@style/Title"
             app:titleTextColor="@color/colorAccent"
+
 
             />
 

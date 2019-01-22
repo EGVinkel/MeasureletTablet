@@ -23,6 +23,12 @@ public class Intake {
         this.timestamp = LocalDateTime.now().toString();
     }
 
+    public Intake(String type, int size, String uuid, String timestamp) {
+        this.uuid = uuid;
+        this.type = type;
+        this.size = size;
+        this.timestamp = timestamp;
+    }
 
     public String getUuid() {
         return uuid;

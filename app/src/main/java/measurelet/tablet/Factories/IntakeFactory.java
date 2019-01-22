@@ -3,6 +3,7 @@ package measurelet.tablet.Factories;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,9 +22,21 @@ public class IntakeFactory {
         AppData.DB_REFERENCE.child("patients").child(id).child("registrations").setValue(intakes);
     }
 
-    public static void UpdateNewIntake(Intake intake, String id) {
-        AppData.DB_REFERENCE.child("patients").child(id).child("registrations").child(intake.uuid).setValue(intake);
+        public static void UpdateNewIntake(Intake intake,String id) {
+            List<Intake> intakes = MainActivity.patientsHashmap.get(id) == null ? new ArrayList<>() : MainActivity.patientsHashmap.get(id).getRegistrations();
+            int findindex=0;
+            for (int i = 0; i <intakes.size() ; i++) {
+                if(intakes.get(i).uuid.equals(intake.uuid)){
+                    findindex=i;
+                }
+
+            }
+            intakes.remove(findindex);
+            intakes.add(findindex,intake);
+            AppData.DB_REFERENCE.child("patients").child(id).child("registrations").setValue(intakes);
+
     }
+
 
 
     public static HashMap<String, Integer> getIntakePrHour(ArrayList<Intake> dailyIntake) {
@@ -47,8 +60,13 @@ public class IntakeFactory {
 
         return hourMap;
     }
+    public static void DeleteIntake(Intake intake,String id) {
+        List<Intake> intakes = MainActivity.patientsHashmap.get(id) == null ? new ArrayList<>() : MainActivity.patientsHashmap.get(id).getRegistrations();
+        intakes.remove(intake);
+        AppData.DB_REFERENCE.child("patients").child(id).child("registrations").setValue(intakes);
+
+    }
 
 
-    //TODO: delete intakes
 }
 

@@ -1,9 +1,13 @@
 package measurelet.tablet.Fragments;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -28,8 +33,14 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -37,10 +48,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import measurelet.tablet.AppData;
 import measurelet.tablet.Factories.GraphDataFactory;
+import measurelet.tablet.Factories.IntakeFactory;
+import measurelet.tablet.Factories.WeightFactory;
 import measurelet.tablet.Formatters.MinXAxisValueFormatter;
 import measurelet.tablet.Formatters.Valueformatter;
 import measurelet.tablet.MainActivity;
 import measurelet.tablet.Model.Patient;
+import measurelet.tablet.Model.Weight;
 import measurelet.tablet.R;
 
 
@@ -59,7 +73,9 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private DecimalFormat df;
     private Bundle b = new Bundle();
     private Patient pat;
-    private String temp;
+    private String Id;
+    private AlertDialog ad;
+    private int weight;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,9 +85,9 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         setHasOptionsMenu(true);
         setMenuVisibility(true);
 
-        temp = getArguments().getString("Id");
-        pat = MainActivity.patientsHashmap.get(temp);
-        b.putString("Id", temp);
+        Id = getArguments().getString("Id");
+        pat = MainActivity.patientsHashmap.get(Id);
+        b.putString("Id", Id);
         df = new DecimalFormat("#.##");
         patient = view.findViewById(R.id.getname);
         patient.setText(pat.getName());
@@ -90,15 +106,15 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
 
         //get databasedata
-        kgdatas = GraphDataFactory.getKgEntries(temp);
-        mldata = GraphDataFactory.getMlEntries(temp);
+        kgdatas = GraphDataFactory.getKgEntries(Id);
+        mldata = GraphDataFactory.getMlEntries(Id);
 
 
         //Precautions to avoid crashing when no regs have been made
-        if (!MainActivity.patientsHashmap.get(temp).getWeights().isEmpty()) {
+        if (!MainActivity.patientsHashmap.get(Id).getWeights().isEmpty()) {
             createkggraph();
         }
-        if (!MainActivity.patientsHashmap.get(temp).getRegistrations().isEmpty()) {
+        if (!MainActivity.patientsHashmap.get(Id).getRegistrations().isEmpty()) {
             //Ugly but functional solution to avoid graph being drawn before dummy data is created;
             Boolean wait = true;
             while (wait) {
@@ -120,7 +136,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     @Override
     public void onClick(View view) {
         if (view == add) {
-            DialogFragment dialog = new MyDialogFragment();
+            DialogFragment dialog = new AddliquidFragment();
             dialog.setArguments(b);
             dialog.show(getFragmentManager(), "dialog");
 
@@ -187,7 +203,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         bardata.setBarWidth(0.4f);
         graphml.setData(bardata);
         xAxisml = graphml.getXAxis();
-        xAxisml.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Intake")));
+        xAxisml.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(Id, "Intake")));
         xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxisml.setCenterAxisLabels(true);
         xAxisml.setGranularity(1f);
@@ -263,7 +279,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg.getAxisRight().setDrawGridLines(false);
         graphkg.getAxisLeft().setDrawGridLines(false);
         xAxiskg.setDrawGridLines(false);
-        xAxiskg.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(temp, "Weight")));
+        xAxiskg.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(Id, "Weight")));
         xAxiskg.setGranularity(1f);
         graphkg.setOnChartValueSelectedListener(this);
         graphkg.getAxisLeft().setTextSize(20);
@@ -296,13 +312,79 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
             builder.setCancelable(true);
             builder.setPositiveButton("OK", (dialog, which) -> {
 
-                AppData.DB_REFERENCE.child("patients").child(temp).removeValue();
+                AppData.DB_REFERENCE.child("patients").child(Id).removeValue();
                 NavHostFragment.findNavController(this).navigate(R.id.startFragment);
 
 
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
             builder.show();
+
+        }
+
+        if(item.getItemId()==R.id.addweight){
+            if(!(MainActivity.patientsHashmap.get(Id).getWeightForDate(LocalDate.now()).isEmpty())){
+                Toast.makeText(getActivity(),"Der er registreret vægt i dag", Toast.LENGTH_LONG).show();
+                return false;
+            }
+            Context con= getContext();
+            assert con != null;
+            final AlertDialog.Builder builder = new AlertDialog.Builder(con);
+            builder.setCancelable(true);
+            final TextInputEditText inputweight = new TextInputEditText(con);
+            final int maxLength = 3;
+            inputweight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+            inputweight.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+            TextInputLayout tbed = new TextInputLayout(con);
+            tbed.addView(inputweight);
+            tbed.setHint("Vægt");
+
+            builder.setView(tbed);
+
+
+
+            builder.setPositiveButton("OK", (dialog, which) -> {
+
+                if (Objects.requireNonNull(inputweight.getText()).length() == 0) {
+
+
+                    Handler handler = new Handler();
+                    handler.post(() -> ad.show());
+                }
+                if (inputweight.getText().length() > 0) {
+                    this.weight = Integer.parseInt(inputweight.getText().toString());
+                    Weight weight = new Weight(this.weight);
+                    WeightFactory.InsertNewWeight(weight, Id);
+
+                }
+
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+              ad=builder.show();
+
+
+        }
+        if(item.getItemId()==R.id.editweight||item.getItemId()==R.id.editliq){
+            DialogFragment dialog = new Date_Selecter_Fragment();
+            if(item.getItemId()==R.id.editweight){
+                if((!MainActivity.patientsHashmap.get(Id).getWeights().isEmpty())){
+                    b.putString("selection","Weight");
+                    dialog.setArguments(b);
+                    dialog.show(getFragmentManager(), "cal");
+                }
+                else Toast.makeText(getActivity(),"Ingen registreringer af vægt", Toast.LENGTH_LONG).show();
+
+
+            }
+            if(item.getItemId()==R.id.editliq){
+                if (!MainActivity.patientsHashmap.get(Id).getRegistrations().isEmpty()) {
+                    b.putString("selection", "Intake");
+                    dialog.setArguments(b);
+                    dialog.show(getFragmentManager(), "cal");
+                }
+                else Toast.makeText(getActivity(),"Ingen registreringer af væske", Toast.LENGTH_LONG).show();
+            }
 
         }
 

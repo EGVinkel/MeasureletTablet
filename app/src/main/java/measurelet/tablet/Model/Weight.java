@@ -4,6 +4,7 @@ import com.google.firebase.database.Exclude;
 
 import org.threeten.bp.LocalDateTime;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class Weight {
@@ -20,6 +21,11 @@ public class Weight {
         this.weightKG = weightKG;
         this.timestamp = LocalDateTime.now().toString();
         this.uuid = UUID.randomUUID().toString();
+    }
+    public Weight(double weightKG, String uuid, String timestamp){
+        this.weightKG = weightKG;
+        this.timestamp = timestamp;
+        this.uuid = uuid;
     }
 
     public double getWeightKG() {

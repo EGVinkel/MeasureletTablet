@@ -18,4 +18,23 @@
     <string name="difference">Difference</string>
     <string name="v_gt">Vægt</string>
     <string name="v_lg_en_seng">Vælg en seng</string>
+    <string name="weight">Tilføj Vægt</string>
+    <string name="pickadate">Vælg en dato</string>
+    <string name="valgafregistrering">Vælg en registrering</string>
+    <string name="gem">Gem</string>
+    <string name="slet">Slet</string>
+
+
+    <string-array name="fluidtypes">
+        <item>Vand</item>
+        <item>Iv</item>
+        <item>Kaffe</item>
+        <item>Sodavand</item>
+        <item>Saftevand</item>
+        <item>Andet</item>
+
+
+    </string-array>
+
+
 </resources>

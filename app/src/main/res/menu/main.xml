@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    app:itemTextAppearance="@style/MenuItems"
+
+    >
     <item
         android:id="@+id/deletebed"
-        android:orderInCategory="100"
+        android:orderInCategory="1"
         android:title="@string/deletebed"
-
-
         />
+
+    <item android:id="@+id/addweight"
+        android:orderInCategory="2"
+        android:title="@string/weight"/>
+    <item
+        android:id="@+id/edit"
+        android:orderInCategory="2"
+        android:title="Rediger Registrering" >
+        <menu >
+            <item
+                android:id="@+id/editweight"
+                android:orderInCategory="1"
+                android:title="@string/v_gt" />
+            <item
+                android:id="@+id/editliq"
+                android:orderInCategory="2"
+                android:title="Væske" />
+        </menu>
+    </item>
+
+
 </menu>

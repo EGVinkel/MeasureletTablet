@@ -8,10 +8,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="400dp"
-        android:layout_height="600dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="550dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,21 +18,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
-        <TextView
-            android:id="@+id/overskrift"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/v_skeregistrering"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/guidetop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/overskrift"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/v_skeregistrering"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/guidetop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -104,25 +109,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/hide"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/timer"
-                android:visibility="invisible">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:digits="0123456789"
-                    android:imeOptions="actionDone"
-                    android:inputType="number"
-                    android:maxLength="2"
-                    tools:layout_editor_absoluteX="167dp"
-                    tools:layout_editor_absoluteY="403dp" />
-            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <androidx.constraintlayout.widget.Guideline

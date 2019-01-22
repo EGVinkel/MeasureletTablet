@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/dialogFragment"
-        android:name="measurelet.tablet.Fragments.MyDialogFragment"
+        android:name="measurelet.tablet.Fragments.AddliquidFragment"
         android:label="fragment_dialog"
         tools:layout="@layout/fragment_dialog" />
     <action android:id="@+id/action_global_startFragment"
@@ -58,6 +58,11 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_enter_anim"
         app:popExitAnim="@anim/nav_default_exit_anim" />
+    <fragment
+        android:id="@+id/editlist"
+        android:name="measurelet.tablet.Fragments.Editlist"
+        android:label="fragment_editlist"
+        tools:layout="@layout/fragment_editlist" />
 
 
 </navigation>
