@@ -1,8 +1,10 @@
 package measurelet.tablet.Fragments;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
+
 import androidx.fragment.app.DialogFragment;
 import measurelet.tablet.Factories.IntakeFactory;
 import measurelet.tablet.Factories.WeightFactory;
@@ -47,7 +50,7 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.edit_liquid, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_liquid, container, false);
 
 
 
@@ -81,7 +84,7 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
             title.setText("Rediger Vægt");
             weightflow=true;
             inputsethint.setHint("Indtast vægt");
-            Weight = MainActivity.patientsHashmap.get(id).getWeightForDate(LocalDate.parse(datestring)).get(position);
+            Weight = MainActivity.patientsHashmap.get(id).getWeightForDate(LocalDate.parse(datestring));
             timePicker.setVisibility(View.INVISIBLE);
             amount_input.setText(Double.toString(Weight.getWeightKG()));
             amount_input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
@@ -128,7 +131,7 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
     @Override
     public void onClick(View vv) {
         if (vv == gemReg) {
-            LocalDateTime date = LocalDate.parse(datestring).atTime(timePicker.getHour(),timePicker.getMinute());
+            LocalDateTime date;
 
 
             if(!weightflow){
@@ -141,11 +144,13 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
                     }
 
                 }
-
+                date = LocalDate.parse(datestring).atTime(timePicker.getHour(), timePicker.getMinute());
                 Intake intake = new Intake(type, Integer.parseInt(amount_input.getText().toString()) , Intake.getUuid(), date.toString());
                 IntakeFactory.UpdateNewIntake(intake, id);
             }
             if(weightflow){
+                Log.d("hej", datestring);
+                date = LocalDate.parse(datestring).atTime(LocalDateTime.now().getHour(), LocalDateTime.now().getMinute());
                 Weight weight = new Weight(Double.parseDouble(amount_input.getText().toString()),Weight.uuid,date.toString());
                 WeightFactory.UpdateNewWeight(weight,id);
 
@@ -161,7 +166,7 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
             String button1String = "Slet";
             String button2String = "Fortryd";
 
-            AlertDialog.Builder ad = new AlertDialog.Builder(context);
+            final AlertDialog.Builder ad = new AlertDialog.Builder(context);
             ad.setTitle(title);
             ad.setMessage(message);
 

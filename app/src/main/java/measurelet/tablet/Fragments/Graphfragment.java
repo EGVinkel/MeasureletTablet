@@ -36,8 +36,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -48,7 +48,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import measurelet.tablet.AppData;
 import measurelet.tablet.Factories.GraphDataFactory;
-import measurelet.tablet.Factories.IntakeFactory;
 import measurelet.tablet.Factories.WeightFactory;
 import measurelet.tablet.Formatters.MinXAxisValueFormatter;
 import measurelet.tablet.Formatters.Valueformatter;
@@ -76,6 +75,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private String Id;
     private AlertDialog ad;
     private int weight;
+    private DateTimeFormatter formate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,7 +90,10 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         b.putString("Id", Id);
         df = new DecimalFormat("#.##");
         patient = view.findViewById(R.id.getname);
-        patient.setText(pat.getName());
+        if (!pat.getName().isEmpty()) {
+            patient.setText(pat.getName());
+        }
+        formate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         bed = view.findViewById(R.id.getbed);
         bed.setText(pat.getBedNum() + "");
         dif = view.findViewById(R.id.dif);
@@ -105,12 +108,12 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         add.setOnClickListener(this);
 
 
-        //get databasedata
         kgdatas = GraphDataFactory.getKgEntries(Id);
-        mldata = GraphDataFactory.getMlEntries(Id);
-
-
+        mldata = GraphDataFactory.MlEntries(Id);
         //Precautions to avoid crashing when no regs have been made
+
+
+        //get databasedata
         if (!MainActivity.patientsHashmap.get(Id).getWeights().isEmpty()) {
             createkggraph();
         }
@@ -127,7 +130,6 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
 
         }
-
 
         return view;
     }
@@ -203,7 +205,11 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         bardata.setBarWidth(0.4f);
         graphml.setData(bardata);
         xAxisml = graphml.getXAxis();
-        xAxisml.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(Id, "Intake")));
+        ArrayList<String> dates = new ArrayList<>();
+        for (LocalDate lolc : GraphDataFactory.dateSorter(Id, "Intake")) {
+            dates.add(formate.format(lolc));
+        }
+        xAxisml.setValueFormatter(new MinXAxisValueFormatter(dates));
         xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxisml.setCenterAxisLabels(true);
         xAxisml.setGranularity(1f);
@@ -264,12 +270,19 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         getActivity().getWindowManager().getDefaultDisplay().getRealSize(size);
         float offx = ((size.x * 0.7f) * 0.65f) / 48;
         markoer.setOffset(-offx, -offx);
-        graphkg.setMarker(markoer);
-        graphkg.getDescription().setEnabled(false);
-  /*      graphkg.getAxisLeft().setAxisMaximum(50);
-        graphkg.getAxisLeft().setAxisMinimum(100);*/
         xAxiskg = graphkg.getXAxis();
-        xAxiskg.setSpaceMax(0.5f);
+        graphkg.setMarker(markoer);
+        ArrayList<String> dates = new ArrayList<>();
+        for (LocalDate lolc : GraphDataFactory.dateSorter(Id, "Weight")) {
+            dates.add(formate.format(lolc));
+        }
+
+        xAxiskg.setValueFormatter(new MinXAxisValueFormatter(dates));
+        xAxiskg.setGranularity(1f);
+        graphkg.getDescription().setEnabled(false);
+        graphkg.getAxisLeft().setAxisMaximum(graphkg.getYMax() + 20);
+        graphkg.getAxisLeft().setAxisMinimum(graphkg.getYMin() - 20);
+        xAxiskg.setSpaceMax(0.9f);
         xAxiskg.setSpaceMin(0.1f);
         xAxiskg.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxiskg.setTextSize(18);
@@ -279,13 +292,14 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphkg.getAxisRight().setDrawGridLines(false);
         graphkg.getAxisLeft().setDrawGridLines(false);
         xAxiskg.setDrawGridLines(false);
-        xAxiskg.setValueFormatter(new MinXAxisValueFormatter(GraphDataFactory.dateSorter(Id, "Weight")));
-        xAxiskg.setGranularity(1f);
         graphkg.setOnChartValueSelectedListener(this);
         graphkg.getAxisLeft().setTextSize(20);
-        graphkg.setVisibleXRangeMaximum(3);
+        graphkg.centerViewTo(kgdatas.size(), 1f, YAxis.AxisDependency.LEFT);
+        float minXRange = 3;
+        float maxXRange = 3;
+
+        graphkg.setVisibleXRange(minXRange, maxXRange);
         graphkg.setTouchEnabled(true);
-        // graphkg.setDrawBorders(true);
         Legend l = graphkg.getLegend();
         l.setTextSize(18);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -323,11 +337,11 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         }
 
         if(item.getItemId()==R.id.addweight){
-            if(!(MainActivity.patientsHashmap.get(Id).getWeightForDate(LocalDate.now()).isEmpty())){
+            if (!(MainActivity.patientsHashmap.get(Id).getWeightForDate(LocalDate.now()) == null)) {
                 Toast.makeText(getActivity(),"Der er registreret vægt i dag", Toast.LENGTH_LONG).show();
                 return false;
             }
-            Context con= getContext();
+            Context con = getActivity();
             assert con != null;
             final AlertDialog.Builder builder = new AlertDialog.Builder(con);
             builder.setCancelable(true);
@@ -335,10 +349,10 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
             final int maxLength = 3;
             inputweight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
             inputweight.setInputType(InputType.TYPE_CLASS_NUMBER);
-
             TextInputLayout tbed = new TextInputLayout(con);
             tbed.addView(inputweight);
             tbed.setHint("Vægt");
+            tbed.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
 
             builder.setView(tbed);
 

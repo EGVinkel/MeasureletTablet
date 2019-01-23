@@ -21,7 +21,7 @@ public class WeightFactory {
         int findindex=0;
         for (int i = 0; i <weights.size() ; i++) {
             if(weights.get(i).uuid.equals(weight.uuid)){
-
+                findindex = i;
             }
 
         }

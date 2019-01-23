@@ -138,21 +138,15 @@ public class Patient {
     }
 
     @Exclude
-    public ArrayList<Weight> getWeightForDate(LocalDate date) {
+    public Weight getWeightForDate(LocalDate date) {
         weights.removeIf(Objects::isNull);
-        ArrayList<Weight> WeightCurrentDate = new ArrayList<>();
+        Weight WeightCurrentDate = null;
         for (Weight i : weights) {
             if (i.getDatetime().getDayOfMonth() == date.getDayOfMonth() && i.getDatetime().getMonthValue() == date.getMonthValue()) {
-                WeightCurrentDate.add(i);
+                WeightCurrentDate = i;
             }
         }
-        //SORT
-        Collections.sort(WeightCurrentDate, (o1, o2) -> {
-            if (o1.getDatetime().isEqual(o2.getDatetime())) {
-                return 0;
-            }
-            return o1.getDatetime().isAfter(o2.getDatetime()) ? -1 : 1;
-        });
+
 
         return WeightCurrentDate;
     }

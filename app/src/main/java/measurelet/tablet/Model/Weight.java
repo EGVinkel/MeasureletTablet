@@ -4,7 +4,6 @@ import com.google.firebase.database.Exclude;
 
 import org.threeten.bp.LocalDateTime;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 public class Weight {
@@ -38,6 +37,9 @@ public class Weight {
 
     @Exclude
     public LocalDateTime getDatetime() {
+        if (timestamp == null) {
+            return LocalDateTime.now();
+        }
         return LocalDateTime.parse(timestamp);
     }
 

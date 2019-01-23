@@ -19,6 +19,7 @@ public class AppData extends Application {
     public void onCreate() {
         super.onCreate();
         AndroidThreeTen.init(this);
+
         // Required initialization logic here!
         createAppDatabase();
 
