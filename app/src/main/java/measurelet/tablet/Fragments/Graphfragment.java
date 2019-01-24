@@ -85,7 +85,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_graphfragment, container, false);
-        view.setVisibility(View.INVISIBLE);
+
         setHasOptionsMenu(true);
         setMenuVisibility(true);
 
@@ -97,7 +97,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
         if (pat != null) {
             b.putString("Id", Id);
-            df = new DecimalFormat("#.##");
+            //   df = new DecimalFormat("#.##");
             patient = view.findViewById(R.id.getname);
             if (!pat.getName().isEmpty()) {
                 patient.setText(pat.getName());
@@ -127,8 +127,9 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
             final Handler handler = new Handler();
             handler.postDelayed(() -> {
+                view.setVisibility(View.INVISIBLE);
                 ((MainActivity) getActivity()).loadAnimation().playAnimation();
-            }, 100);
+            }, 500);
 
             new AsyncTask<Void, Void, Void>() {
                 @Override
@@ -188,31 +189,39 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        int tempin = (int) mldata.get((int) e.getX()).getY();
-        int tempout = (int) outputdata.get((int) e.getX()).getY();
+        int tempin = 0;
+        int tempout = 0;
 
+        if (kgdatas.size() < e.getX() && !kgdatas.isEmpty()) {
+            weightday.setText(kgdatas.get(kgdatas.size() - 1).getY() + "kg");
+            graphkg.centerViewTo(kgdatas.size() - 1, 1f, YAxis.AxisDependency.LEFT);
 
-        intake.setText(tempin + "ml ");
-        output.setText(tempout + "ml ");
-        dif.setText((tempin - tempout) + "ml ");
-        graphml.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
-        graphml.highlightValue(h);
-
-
-        if (!kgdatas.isEmpty()) {
-            if (kgdatas.size() < e.getX()) {
-                weightday.setText(df.format(kgdatas.get(kgdatas.size() - 1).getY()) + "kg");
-                graphkg.centerViewTo(kgdatas.size() - 1, 1f, YAxis.AxisDependency.LEFT);
-
-            } else {
-                weightday.setText(df.format(kgdatas.get((int) e.getX()).getY()) + "kg");
-                graphkg.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
-
-            }
+        } else {
+            weightday.setText(kgdatas.get((int) e.getX()).getY() + "kg");
+            graphkg.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
             graphkg.highlightValue(h);
+
         }
 
-    }
+        if (mldata.size() < e.getX() && !mldata.isEmpty()) {
+            tempin = (int) mldata.get(mldata.size() - 1).getY();
+            tempout = (int) mldata.get(mldata.size() - 1).getY();
+            intake.setText(tempin + "ml");
+            output.setText(tempout + "ml");
+            graphml.centerViewTo(mldata.size() - 1, 1f, YAxis.AxisDependency.LEFT);
+        } else if (mldata.size() > (int) e.getX()) {
+            tempin = (int) mldata.get((int) e.getX()).getY();
+            tempout = (int) outputdata.get((int) e.getX()).getY();
+            intake.setText(tempin + "ml ");
+            output.setText(tempout + "ml ");
+            dif.setText((tempin - tempout) + "ml ");
+            graphml.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
+            graphml.highlightValue(h);
+
+        }
+        }
+
+
 
     @Override
     public void onNothingSelected() {
@@ -232,9 +241,9 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
 
 
     public void setupMlViews() {
-
-
-
+        xAxisml = graphml.getXAxis();
+        xAxisml.setSpaceMax(1.1f);
+        xAxisml.setSpaceMin(0.1f);
         graphml.setDoubleTapToZoomEnabled(false);
         graphml.setTouchEnabled(true);
         graphml.getDescription().setEnabled(false);
@@ -267,6 +276,9 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         getActivity().getWindowManager().getDefaultDisplay().getRealSize(size);
         float offx = ((size.x * 0.7f) * 0.65f) / 48;
         markoer.setOffset(-offx, -offx);
+        xAxiskg = graphkg.getXAxis();
+        xAxiskg.setSpaceMax(0.9f);
+        xAxiskg.setSpaceMin(0.1f);
         graphkg.getDescription().setEnabled(false);
         graphkg.setMarker(markoer);
         graphkg.setExtraBottomOffset(28);
@@ -304,13 +316,12 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         }
         bardata = new BarData(mlset, mlset2);
         graphml.setData(bardata);
-        xAxisml = graphml.getXAxis();
+
         xAxisml.setDrawGridLines(false);
         xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxisml.setCenterAxisLabels(true);
         xAxisml.setGranularity(1f);
-        xAxisml.setSpaceMax(1.1f);
-        xAxisml.setSpaceMin(0.1f);
+
         xAxisml.setTextSize(20);
         xAxisml.setValueFormatter(new MinXAxisValueFormatter(dates));
         graphml.setVisibleXRangeMaximum(5);
@@ -338,11 +349,10 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         kgset.setDrawHighlightIndicators(false);
         kgdata = new LineData(kgset);
         graphkg.setData(kgdata);
-        xAxiskg = graphkg.getXAxis();
+
         xAxiskg.setGranularity(1f);
         kgdata.setValueTextSize(16f);
-        xAxiskg.setSpaceMax(0.9f);
-        xAxiskg.setSpaceMin(0.1f);
+
         graphkg.setVisibleXRangeMaximum(3);
 
         xAxiskg.setPosition(XAxis.XAxisPosition.BOTTOM);
