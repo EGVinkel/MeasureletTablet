@@ -9,6 +9,7 @@ import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import measurelet.tablet.MainActivity;
@@ -18,20 +19,20 @@ import measurelet.tablet.Model.Weight;
 
 public class GraphDataFactory {
 
-    public static ArrayList<Entry> getKgEntries(String id) {
-        ArrayList<Entry> datapoints = new ArrayList<>();
+    public static List<Entry> getKgEntries(String id) {
+        List<Entry> datapoints = new ArrayList<>();
         Patient currentpatient = MainActivity.patientsHashmap.get(id);
         HashMap<String, Double> registrationsDateMap = new HashMap<>();
         assert currentpatient != null;
-
-        for (LocalDate local : dateSorter(id, "Weight")) {
+        String weight = "Weight";
+        for (LocalDate local : dateSorter(id, weight)) {
             registrationsDateMap.put(local.toString(), (currentpatient.getWeightForDate(local).getWeightKG()));
         }
 
 
-        for (int i = 0; i < dateSorter(id, "Weight").size(); i++) {
+        for (int i = 0; i < dateSorter(id, weight).size(); i++) {
 
-            datapoints.add(new Entry((float) i, Objects.requireNonNull(registrationsDateMap.get(dateSorter(id, "Weight").valueAt(i).toString())).floatValue()));
+            datapoints.add(new Entry((float) i, Objects.requireNonNull(registrationsDateMap.get(dateSorter(id, weight).valueAt(i).toString())).floatValue()));
         }
         return datapoints;
     }
@@ -43,14 +44,14 @@ public class GraphDataFactory {
         ArraySet<LocalDate> dates = new ArraySet<>();
         if (type.equals("Intake")) {
             assert currentpatient != null;
-            ArrayList<Intake> currentpatientRegistrations = currentpatient.getSortedRegs();
+            List<Intake> currentpatientRegistrations = currentpatient.getSortedRegs();
             for (Intake intake : currentpatientRegistrations) {
                 dates.add(intake.getDateTime().toLocalDate());
             }
         }
         if (type.equals("Weight")) {
             assert currentpatient != null;
-            ArrayList<Weight> currentpatientRegistrations = currentpatient.getSortedWeights();
+            List<Weight> currentpatientRegistrations = currentpatient.getSortedWeights();
             for (Weight weight : currentpatientRegistrations) {
                 dates.add(weight.getDatetime().toLocalDate());
 
@@ -60,14 +61,14 @@ public class GraphDataFactory {
         return dates;
     }
 
-    public static ArrayList<BarEntry> MlEntries(String id) {
-        ArrayList<BarEntry> datapoints = new ArrayList<>();
+    public static List<BarEntry> MlEntries(String id) {
+        List<BarEntry> datapoints = new ArrayList<>();
         Patient currentpatient = MainActivity.patientsHashmap.get(id);
         HashMap<String, Integer> registrationsDateMap = new HashMap<>();
         HashMap<String, Integer> IVregistrationsDateMap = new HashMap<>();
-
+        String intake = "Intake";
         assert currentpatient != null;
-        for (LocalDate local : dateSorter(id, "Intake")) {
+        for (LocalDate local : dateSorter(id, intake)) {
             int ml1 = 0;
             int ml2 = 0;
             for (Intake in : currentpatient.getIntakesForDate(local)) {
@@ -86,8 +87,8 @@ public class GraphDataFactory {
 
         }
 
-        for (int i = 0; i < dateSorter(id, "Intake").size(); i++) {
-            datapoints.add(new BarEntry((float) i, new float[]{(Objects.requireNonNull(registrationsDateMap.get(dateSorter(id, "Intake").valueAt(i).toString())).floatValue()), (Objects.requireNonNull(IVregistrationsDateMap.get(dateSorter(id, "Intake").valueAt(i).toString())).floatValue())}));
+        for (int i = 0; i < dateSorter(id, intake).size(); i++) {
+            datapoints.add(new BarEntry((float) i, new float[]{(Objects.requireNonNull(registrationsDateMap.get(dateSorter(id, intake).valueAt(i).toString())).floatValue()), (Objects.requireNonNull(IVregistrationsDateMap.get(dateSorter(id, "Intake").valueAt(i).toString())).floatValue())}));
 
         }
 

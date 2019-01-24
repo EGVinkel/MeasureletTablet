@@ -14,6 +14,7 @@ import org.threeten.bp.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -29,7 +30,7 @@ public class Date_Selecter_Fragment extends DialogFragment implements OnDayClick
     String selection;
     com.applandeo.materialcalendarview.CalendarView cal;
     Bundle b= new Bundle();
-    ArrayList<Weight> localw;
+    List<Weight> localw;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +53,6 @@ public class Date_Selecter_Fragment extends DialogFragment implements OnDayClick
 
         Patient curpat= MainActivity.patientsHashmap.get(id);
         ArrayList<EventDay> events = new ArrayList<>();
-        ArrayList<Calendar> calp = new ArrayList<>();
-
        if(selection.equalsIgnoreCase("Weight")){
 
            localw = new ArrayList<>(curpat.getSortedWeights());
@@ -103,29 +102,26 @@ public class Date_Selecter_Fragment extends DialogFragment implements OnDayClick
         LocalDate date = LocalDate.of(temp.get(Calendar.YEAR), temp.get(Calendar.MONTH) + 1, temp.get(Calendar.DAY_OF_MONTH));
         String s= date.toString();
         Patient curpat = MainActivity.patientsHashmap.get(id);
-        if (selection.equalsIgnoreCase("Intake")) {
-
-            if (curpat.getIntakesForDate(date).isEmpty()) {
+        if (selection.equalsIgnoreCase("Intake") && curpat.getIntakesForDate(date).isEmpty()) {
                 Toast.makeText(getActivity(), "Ingen registreringer på denne dag", Toast.LENGTH_LONG).show();
                 return;
-            }
+
         }
-        if (selection.equalsIgnoreCase("Weight")) {
-            if (curpat.getWeightForDate(date) == null) {
-                Toast.makeText(getActivity(), "Ingen registreringer på denne dag", Toast.LENGTH_LONG).show();
+        if (selection.equalsIgnoreCase("Weight") && curpat.getWeightForDate(date) == null) {
+            Toast.makeText(getActivity(), "Ingen registreringer på denne dag", Toast.LENGTH_LONG).show();
                 return;
 
-            }
+
         }
 
         b.putString("date",s);
         if (selection.equals("Intake")) {
-            DialogFragment dialog = new Editlist();
+            DialogFragment dialog = new EditlistDialog();
             dialog.setArguments(b);
             dialog.show(getFragmentManager(), "list");
         }
         if (selection.equals("Weight")) {
-            DialogFragment dialog = new edit_liquid();
+            DialogFragment dialog = new EditLiquidDialog();
             b.putInt("position", 0);
             dialog.setArguments(b);
             dialog.show(getFragmentManager(), "dialog");

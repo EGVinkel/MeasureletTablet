@@ -6,18 +6,19 @@ import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Patient {
 
     private Boolean checked = false;
-
+    private Boolean marked = true;
     public String uuid;
     private String name;
     private int bedNum;
-    private ArrayList<Weight> weights = new ArrayList<>();
-    private ArrayList<Intake> registrations = new ArrayList<>();
+    private List<Weight> weights = new ArrayList<>();
+    private List<Intake> registrations = new ArrayList<>();
 
     public Patient() {
 
@@ -71,23 +72,23 @@ public class Patient {
         this.bedNum = bedNum;
     }
 
-    public ArrayList<Weight> getWeights() {
+    public List<Weight> getWeights() {
         return weights;
     }
 
-    public void setWeights(ArrayList<Weight> weights) {
+    public void setWeights(List<Weight> weights) {
         this.weights = weights;
     }
 
-    public ArrayList<Intake> getRegistrations() {
+    public List<Intake> getRegistrations() {
         return registrations;
     }
 
-    public void setRegistrations(ArrayList<Intake> registrations) {
+    public void setRegistrations(List<Intake> registrations) {
         this.registrations = registrations;
     }
     @Exclude
-    public ArrayList<Weight> getSortedWeights() {
+    public List<Weight> getSortedWeights() {
         weights.removeIf(Objects::isNull);
 
         //SORT
@@ -102,7 +103,7 @@ public class Patient {
     }
 
     @Exclude
-    public ArrayList <Intake> getSortedRegs() {
+    public List<Intake> getSortedRegs() {
         registrations.removeIf(Objects::isNull);
 
         //SORT
@@ -118,7 +119,7 @@ public class Patient {
 
 
     @Exclude
-    public ArrayList<Intake> getIntakesForDate(LocalDate date) {
+    public List<Intake> getIntakesForDate(LocalDate date) {
         registrations.removeIf(Objects::isNull);
         ArrayList<Intake> intakesCurrentDate = new ArrayList<>();
         for (Intake i : registrations) {
@@ -151,6 +152,13 @@ public class Patient {
         return WeightCurrentDate;
     }
 
+    public Boolean getMarked() {
+        return marked;
+    }
+
+    public void setMarked(Boolean marked) {
+        this.marked = marked;
+    }
 }
 
 

@@ -1,5 +1,6 @@
 package measurelet.tablet;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,17 +10,22 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -37,13 +43,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView re;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    public static HashMap<String, Patient> patientsHashmap;
+    public static HashMap<String, Patient> patientsHashmap = new HashMap<>();
     private MaterialButton clear, add;
     private NavController navC;
     private Integer bednumber;
     private String name;
     private AlertDialog ad;
-    private ArrayList<Patient> patientArrayList;
+    private ArrayList<Patient> patientArrayList = new ArrayList<>();
     private Context con = this;
 
     @Override
@@ -72,30 +78,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         re.setLayoutManager(mLayoutManager);
         DividerItemDecoration itemDecor = new DividerItemDecoration(con, DividerItemDecoration.VERTICAL);
         re.addItemDecoration(itemDecor);
-        AppData.DB_REFERENCE.child("patients").addValueEventListener(new ValueEventListener() {
+        AppData.DB_REFERENCE.child("patients").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                patientsHashmap = new HashMap<>();
-                patientArrayList = new ArrayList<>();
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    Patient p = childSnapshot.getValue(Patient.class);
+                Patient p = dataSnapshot.getValue(Patient.class);
                     assert p != null;
                     p.getRegistrations().removeIf(Objects::isNull);
                     p.getWeights().removeIf(Objects::isNull);
                     patientsHashmap.put(p.uuid, p);
                     patientArrayList.add(p);
-                }
+
 
 
                 patientArrayList.sort(Comparator.comparingInt(Patient::getBedNum));
+                if (mAdapter == null) {
+                    mAdapter = new BedRecyclerviewAdapter(patientArrayList, re, navC);
+                    re.setAdapter(mAdapter);
 
-                mAdapter = new BedRecyclerviewAdapter(patientArrayList, re, navC, con);
-                re.setAdapter(mAdapter);
-                if (Objects.requireNonNull(navC.getCurrentDestination()).getId() == R.id.graphfragment) {
-                    AppData.ani = false;
-                    navC.navigate(R.id.fadegraph, AppData.theb);
                 }
+                AppData.ani = false;
+                mAdapter.notifyDataSetChanged();
+                if (navC.getCurrentDestination().getId() == R.id.graphfragment) {
+                    navC.navigate(R.id.fadegraph, AppData.theb);
+
+                }
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Patient oldpat = patientsHashmap.get(dataSnapshot.getKey());
+                Patient changedpat = dataSnapshot.getValue(Patient.class);
+                changedpat.setMarked(oldpat.getMarked());
+                changedpat.setChecked(oldpat.getChecked());
+                patientArrayList.removeIf(p -> dataSnapshot.getKey().equals(p.getUuid()));
+
+                patientArrayList.add(changedpat);
+                patientsHashmap.put(dataSnapshot.getKey(), changedpat);
+                patientArrayList.sort(Comparator.comparingInt(Patient::getBedNum));
+                mAdapter.notifyDataSetChanged();
+                navC.navigate(R.id.fadegraph, AppData.theb);
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                patientArrayList.removeIf(p -> dataSnapshot.getKey().equals(p.getUuid()));
+                patientsHashmap.remove(dataSnapshot.getKey());
+                patientArrayList.sort(Comparator.comparingInt(Patient::getBedNum));
+                mAdapter.notifyDataSetChanged();
+                navC.navigate(R.id.fadegraph, AppData.theb);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
 
             }
 
@@ -104,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
     }
 
 
@@ -179,6 +218,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (loadAnimation().isAnimating()) {
+            loadAnimation().cancelAnimation();
+        }
     }
 
     @Override
@@ -191,6 +233,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
+
+
+    public LottieAnimationView loadAnimation() {
+
+        LottieAnimationView lw;
+
+        lw = findViewById(R.id.lot_view);
+        lw.setAnimation("trail_loading.json");
+        lw.setRepeatCount(LottieDrawable.INFINITE);
+
+
+        lw.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                lw.setVisibility(View.VISIBLE);
+                lw.animate().alpha(0.9f);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                lw.setVisibility(View.INVISIBLE);
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        return lw;
+    }
+
+
+
+
 }
 
 

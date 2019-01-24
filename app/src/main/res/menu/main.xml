@@ -20,7 +20,7 @@
     <item
         android:id="@+id/edit"
         android:orderInCategory="2"
-        android:title="Rediger Registrering" >
+        android:title="@string/rediger_registrering">
         <menu >
             <item
                 android:id="@+id/editweight"
@@ -29,7 +29,7 @@
             <item
                 android:id="@+id/editliq"
                 android:orderInCategory="2"
-                android:title="Væske" />
+                android:title="@string/v_ske" />
         </menu>
     </item>
 

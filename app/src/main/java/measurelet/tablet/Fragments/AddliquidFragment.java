@@ -1,4 +1,6 @@
 package measurelet.tablet.Fragments;
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -9,8 +11,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+
 import androidx.fragment.app.DialogFragment;
 import androidx.navigation.fragment.NavHostFragment;
 import measurelet.tablet.Factories.IntakeFactory;
@@ -19,17 +23,10 @@ import measurelet.tablet.R;
 
 
 public class AddliquidFragment extends DialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    MaterialButton add;
+    private MaterialButton add;
     private TextInputEditText enteredml, enteredname;
-    private int ml;
     private String liqtyp, id;
-
     private boolean other;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,6 +36,7 @@ public class AddliquidFragment extends DialogFragment implements View.OnClickLis
         enteredml = v.findViewById(R.id.amountofliquid);
         id = getArguments().getString("Id");
         add = v.findViewById(R.id.plusbut);
+
         add.setOnClickListener(this);
         liqtyp = "";
         enteredml.setText("");
@@ -73,7 +71,7 @@ public class AddliquidFragment extends DialogFragment implements View.OnClickLis
                 }
                 liqtyp = enteredname.getText().toString();
             }
-            ml = Integer.parseInt(mil);
+            int ml = Integer.parseInt(mil);
 
             Intake intake = new Intake(liqtyp, ml);
             IntakeFactory.InsertNewIntake(intake, id);
@@ -127,6 +125,7 @@ public class AddliquidFragment extends DialogFragment implements View.OnClickLis
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void emptyFieldAlert(String errorMsg) {
         TextView title = new TextView(getContext());
         title.setText("INTET INDTASTET!");

@@ -1,6 +1,6 @@
 package measurelet.tablet.Fragments;
 
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import measurelet.tablet.Factories.IntakeFactory;
 import measurelet.tablet.Factories.WeightFactory;
@@ -30,7 +31,7 @@ import measurelet.tablet.Model.Intake;
 import measurelet.tablet.Model.Weight;
 import measurelet.tablet.R;
 
-public class edit_liquid extends DialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, TimePicker.OnTimeChangedListener {
+public class EditLiquidDialog extends DialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, TimePicker.OnTimeChangedListener {
 
     private TextInputEditText selftyped, amount_input;
     private TextView title;
@@ -40,28 +41,28 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
     private String selection,id,datestring, type;
     private int hour, minute;
     private boolean other, weightflow;
-    private int position;
     private Intake Intake;
     private Weight Weight;
-    private TextInputLayout inputsethint, selftypedlayout;
+    private TextInputLayout selftypedlayout;
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
         View view = inflater.inflate(R.layout.fragment_edit_liquid, container, false);
 
-
+        this.setCancelable(false);
 
         Bundle bundle = getArguments();
         if (bundle==null){
             dismiss();
             return null;
         }//Argumenter
-        inputsethint = view.findViewById(R.id.inputlayout);
+        TextInputLayout inputsethint = view.findViewById(R.id.inputlayout);
         selftypedlayout=view.findViewById(R.id.selftype);
-        position = bundle.getInt("position");
+        int position = bundle.getInt("position");
         LinearLayout lin= view.findViewById(R.id.hidethis);
         id= getArguments().getString("Id", "");
         selection= getArguments().getString("selection", "");
@@ -76,7 +77,6 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
         timePicker = view.findViewById(R.id.timepicker);
         timePicker.setIs24HourView(true);
         timePicker.setOnTimeChangedListener(this);
-
 
 
         if(selection.equalsIgnoreCase("Weight")){
@@ -111,14 +111,10 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
         spinner.setOnItemSelectedListener(this);
 
 
-
-
-
-
-            if(weightflow){
-                spinner.setVisibility(View.INVISIBLE);
-                selftyped.setVisibility(View.INVISIBLE);
-            }
+        if(weightflow){
+            spinner.setVisibility(View.INVISIBLE);
+            selftyped.setVisibility(View.INVISIBLE);
+        }
 
         return view;
     }
@@ -172,7 +168,7 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
 
             ad.setPositiveButton(
                     button1String,
-                    (dialog, arg1) -> {
+                    (dialog, which) -> {
                         if(weightflow){
                             WeightFactory.DeleteIntake(Weight,id);
                         }
@@ -185,7 +181,7 @@ public class edit_liquid extends DialogFragment implements View.OnClickListener,
 
             ad.setNegativeButton(
                     button2String,
-                    (dialog, arg1) -> dismiss()
+                    (dialog, which) -> dismiss()
             );
 
             ad.show();

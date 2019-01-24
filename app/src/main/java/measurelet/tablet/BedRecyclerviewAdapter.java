@@ -1,6 +1,6 @@
 package measurelet.tablet;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -22,10 +22,9 @@ public class BedRecyclerviewAdapter extends Adapter<BedRecyclerviewAdapter.MyVie
     private boolean sortani = true;
     private NavController navC;
     private RecyclerView re;
-    private Context con;
     private int prevpos;
-    private ArrayList<Patient> bedlist;
-    int selectedPosition = -1;
+    private List<Patient> bedlist;
+    private int selectedPosition = -1;
 
 
     private int getPrevpos() {
@@ -35,30 +34,28 @@ public class BedRecyclerviewAdapter extends Adapter<BedRecyclerviewAdapter.MyVie
         this.prevpos = prevpos;
     }
 
-    public BedRecyclerviewAdapter(ArrayList<Patient> beds, RecyclerView re, NavController nav, Context coni) {
+    public BedRecyclerviewAdapter(List<Patient> beds, RecyclerView re, NavController nav) {
         this.re = re;
         this.navC = nav;
-        this.con = coni;
         this.bedlist = beds;
 
 
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
         myViewHolder.bednumber.setText("Seng " + bedlist.get(position).getBedNum());
         myViewHolder.bind(position);
 
-        if (selectedPosition == position) {
-            myViewHolder.itemView.setBackgroundColor(Color.parseColor("#406699d1"));
-        } else
-            myViewHolder.itemView.setBackgroundColor(Color.parseColor("#00000000"));
-
-        //On click for changing bed and marking
         myViewHolder.itemView.setOnClickListener(view -> {
             selectedPosition = position;
             notifyDataSetChanged();
+
+
+            //On click for changing bed and marking
+
 
             AppData.ani = true;
 
@@ -95,6 +92,12 @@ public class BedRecyclerviewAdapter extends Adapter<BedRecyclerviewAdapter.MyVie
             }
         });
 
+
+        if (selectedPosition == position) {
+            myViewHolder.itemView.setBackgroundColor(Color.parseColor("#406699d1"));
+            bedlist.get(position).setMarked(true);
+        } else myViewHolder.itemView.setBackgroundColor(Color.parseColor("#00000000"));
+        bedlist.get(position).setMarked(false);
 
 
     }
@@ -136,7 +139,10 @@ public class BedRecyclerviewAdapter extends Adapter<BedRecyclerviewAdapter.MyVie
             if (positionen == -1) {
                 return;
             }
+            if (view == itemView) {
 
+
+            }
             if (view == checker) {
 
                 if (!bedlist.get(positionen).getChecked()) {
@@ -157,6 +163,15 @@ public class BedRecyclerviewAdapter extends Adapter<BedRecyclerviewAdapter.MyVie
             } else if (!bedlist.get(position).getChecked()) {
                 checker.setChecked(false);
             }
+
+            if (bedlist.get(position).getMarked()) {
+                itemView.setBackgroundColor(Color.parseColor("#406699d1"));
+
+            } else if (!bedlist.get(position).getMarked()) {
+                itemView.setBackgroundColor(Color.parseColor("#00000000"));
+
+            }
+
 
         }
     }

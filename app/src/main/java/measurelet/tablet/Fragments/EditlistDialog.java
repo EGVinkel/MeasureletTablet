@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -22,12 +22,12 @@ import measurelet.tablet.Model.Intake;
 import measurelet.tablet.Model.Patient;
 import measurelet.tablet.R;
 
-public class Editlist extends DialogFragment {
+public class EditlistDialog extends DialogFragment {
     private String selection,id,date;
     private RecyclerView re;
     private Bundle b = new Bundle();
 
-    public Editlist() {
+    public EditlistDialog() {
 
     }
 
@@ -49,14 +49,15 @@ public class Editlist extends DialogFragment {
         re.setLayoutManager(mLayoutManager);
         DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         re.addItemDecoration(itemDecor);
+
         return editlist;
     }
 
     public class EditRecycler extends RecyclerView.Adapter<EditRecycler.MyViewHolder>{
-        ArrayList<Intake> intakes;
+        List<Intake> intakes;
 
 
-        EditRecycler(ArrayList<Intake> intakes) {
+        EditRecycler(List<Intake> intakes) {
             this.intakes = intakes;
 
 
@@ -115,7 +116,7 @@ public class Editlist extends DialogFragment {
             public void onClick(View view) {
 
                 b.putInt("position", getAdapterPosition());
-                DialogFragment dialog = new edit_liquid();
+                DialogFragment dialog = new EditLiquidDialog();
                 dialog.setArguments(b);
                 dialog.show(getFragmentManager(),"dialog");
                 dismiss();

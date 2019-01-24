@@ -1,9 +1,11 @@
 package measurelet.tablet.Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.icu.text.DecimalFormat;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputFilter;
@@ -40,6 +42,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.appcompat.app.AlertDialog;
@@ -59,9 +62,9 @@ import measurelet.tablet.R;
 
 public class Graphfragment extends Fragment implements View.OnClickListener, OnChartValueSelectedListener {
     private View view;
-    private ArrayList<BarEntry> mldata = new ArrayList<>();
-    private ArrayList<BarEntry> outputdata = new ArrayList<>();
-    private ArrayList<Entry> kgdatas = new ArrayList<>();
+    private List<BarEntry> mldata = new ArrayList<>();
+    private List<BarEntry> outputdata = new ArrayList<>();
+    private List<Entry> kgdatas = new ArrayList<>();
     private MaterialButton add;
     private TextView intake, output, weightday, patient, bed, dif;
     private XAxis xAxisml, xAxiskg;
@@ -77,60 +80,98 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     private int weight;
     private DateTimeFormatter formate;
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_graphfragment, container, false);
-
+        view.setVisibility(View.INVISIBLE);
         setHasOptionsMenu(true);
         setMenuVisibility(true);
 
         Id = getArguments().getString("Id");
         pat = MainActivity.patientsHashmap.get(Id);
-        b.putString("Id", Id);
-        df = new DecimalFormat("#.##");
-        patient = view.findViewById(R.id.getname);
-        if (!pat.getName().isEmpty()) {
-            patient.setText(pat.getName());
+        if (pat == null) {
+            NavHostFragment.findNavController(this).popBackStack();
         }
-        formate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        bed = view.findViewById(R.id.getbed);
-        bed.setText(pat.getBedNum() + "");
-        dif = view.findViewById(R.id.dif);
 
-        graphml = view.findViewById(R.id.graphholder);
-        intake = view.findViewById(R.id.intake);
-        output = view.findViewById(R.id.output);
-
-        weightday = view.findViewById(R.id.kgdata);
-        graphkg = view.findViewById(R.id.chartkg);
-        add = view.findViewById(R.id.plusbut);
-        add.setOnClickListener(this);
-
-
-        kgdatas = GraphDataFactory.getKgEntries(Id);
-        mldata = GraphDataFactory.MlEntries(Id);
-        //Precautions to avoid crashing when no regs have been made
-
-
-        //get databasedata
-        if (!MainActivity.patientsHashmap.get(Id).getWeights().isEmpty()) {
-            createkggraph();
-        }
-        if (!MainActivity.patientsHashmap.get(Id).getRegistrations().isEmpty()) {
-            //Ugly but functional solution to avoid graph being drawn before dummy data is created;
-            Boolean wait = true;
-            while (wait) {
-                createdata();
-                if (!outputdata.isEmpty()) {
-                    wait = false;
-                }
+        if (pat != null) {
+            b.putString("Id", Id);
+            df = new DecimalFormat("#.##");
+            patient = view.findViewById(R.id.getname);
+            if (!pat.getName().isEmpty()) {
+                patient.setText(pat.getName());
             }
-            createmlgraph();
+            formate = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            bed = view.findViewById(R.id.getbed);
+            bed.setText(pat.getBedNum() + "");
+            dif = view.findViewById(R.id.dif);
+
+            graphml = view.findViewById(R.id.graphholder);
+            intake = view.findViewById(R.id.intake);
+            output = view.findViewById(R.id.output);
+
+            weightday = view.findViewById(R.id.kgdata);
+            graphkg = view.findViewById(R.id.chartkg);
+            add = view.findViewById(R.id.plusbut);
+            add.setOnClickListener(this);
+            if (!MainActivity.patientsHashmap.get(Id).getWeights().isEmpty()) {
+                setupKgViews();
+            }
+            if (!MainActivity.patientsHashmap.get(Id).getRegistrations().isEmpty()) {
+
+                setupMlViews();
+
+
+            }
+
+            final Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                ((MainActivity) getActivity()).loadAnimation().playAnimation();
+            }, 100);
+
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected void onCancelled() {
+                    super.onCancelled();
+                }
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    kgdatas = GraphDataFactory.getKgEntries(Id);
+                    mldata = GraphDataFactory.MlEntries(Id);
+                    createdata();
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+
+                    handler.removeCallbacksAndMessages(null);
+
+                    if ((getActivity()) != null) {
+                        ((MainActivity) getActivity()).loadAnimation().cancelAnimation();
+                    }
+
+                    if (view != null) {
+
+                        view.setVisibility(View.VISIBLE);
+
+
+                        if (!MainActivity.patientsHashmap.get(Id).getWeights().isEmpty() && !kgdatas.isEmpty()) {
+                            addDataKg();
+                        }
+                        if (!MainActivity.patientsHashmap.get(Id).getRegistrations().isEmpty() && !outputdata.isEmpty() && !mldata.isEmpty()) {
+                            addDataMl();
+                        }
+                    }
+                }
+            }.execute();
 
 
         }
-
         return view;
     }
 
@@ -190,43 +231,19 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
     }
 
 
-    public void createmlgraph() {
-        BarDataSet mlset = new BarDataSet(mldata, "");
-        mlset.setStackLabels(new String[]{"pr. OS", "IV"});
-        mlset.setColors(ColorTemplate.rgb("b3e5fc"), ColorTemplate.rgb("FF64B5F6"));
+    public void setupMlViews() {
 
-        BarDataSet mlset2 = new BarDataSet(outputdata, "  I ml");
-        mlset2.setStackLabels(new String[]{"Urin", "Afføring"});
-        mlset2.setColors(ColorTemplate.rgb("215981"), ColorTemplate.rgb("90caf9"));
 
-        bardata = new BarData(mlset, mlset2);
-        bardata.setValueTextSize(16f);
-        bardata.setValueFormatter(new Valueformatter(0));
-        bardata.setBarWidth(0.4f);
-        graphml.setData(bardata);
-        xAxisml = graphml.getXAxis();
-        ArrayList<String> dates = new ArrayList<>();
-        for (LocalDate lolc : GraphDataFactory.dateSorter(Id, "Intake")) {
-            dates.add(formate.format(lolc));
-        }
-        xAxisml.setValueFormatter(new MinXAxisValueFormatter(dates));
-        xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxisml.setCenterAxisLabels(true);
-        xAxisml.setGranularity(1f);
-        xAxisml.setSpaceMax(1.1f);
-        xAxisml.setSpaceMin(0.1f);
-        xAxisml.setTextSize(20);
+
         graphml.setDoubleTapToZoomEnabled(false);
         graphml.setTouchEnabled(true);
         graphml.getDescription().setEnabled(false);
         graphml.getAxisRight().setEnabled(false);
         graphml.setOnChartValueSelectedListener(this);
-        graphml.setVisibleXRangeMaximum(5);
         graphml.setExtraBottomOffset(20);
         graphml.getAxisRight().setDrawGridLines(false);
         graphml.getAxisLeft().setTextSize(20);
         graphml.getAxisLeft().setDrawGridLines(false);
-        xAxisml.setDrawGridLines(false);
         graphml.getDescription().setPosition(195f, 670f);
         Legend l = graphml.getLegend();
         l.setTextSize(18);
@@ -236,69 +253,30 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         graphml.setHighlightFullBarEnabled(true);
         //graphml.setDrawBorders(true);
         graphml.getDescription().setTextSize(24);
-        graphml.groupBars(0f, 0.2f, 0f);
-        graphml.centerViewTo(mldata.size(), 1f, YAxis.AxisDependency.RIGHT);
-        graphml.highlightValue(mldata.size(), 0);
 
-        if (AppData.ani) {
-            graphml.animateY(1500);
-            AppData.ani = true;
-        }
 
-        graphml.invalidate();
+
 
     }
 
-    public void createkggraph() {
-
-
-        kgdata = new LineData();
-        LineDataSet kgset = new LineDataSet(kgdatas, "Vægt (kg)");
-        kgset.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        kgset.setLineWidth(4f);
-        kgset.setHighlightLineWidth(3f);
-        kgset.setHighLightColor(Color.BLUE);
-        kgset.setCircleRadius(6);
-        kgset.setDrawHighlightIndicators(false);
-        kgdata.addDataSet(kgset);
+    public void setupKgViews() {
         graphkg.setDoubleTapToZoomEnabled(false);
-        kgdata.setValueTextSize(16f);
-        graphkg.setData(kgdata);
         MarkerImage markoer = new MarkerImage(getActivity(), R.drawable.ic_lens_black_24dp);
         graphkg.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getRealSize(size);
         float offx = ((size.x * 0.7f) * 0.65f) / 48;
         markoer.setOffset(-offx, -offx);
-        xAxiskg = graphkg.getXAxis();
-        graphkg.setMarker(markoer);
-        ArrayList<String> dates = new ArrayList<>();
-        for (LocalDate lolc : GraphDataFactory.dateSorter(Id, "Weight")) {
-            dates.add(formate.format(lolc));
-        }
-
-        xAxiskg.setValueFormatter(new MinXAxisValueFormatter(dates));
-        xAxiskg.setGranularity(1f);
         graphkg.getDescription().setEnabled(false);
-        graphkg.getAxisLeft().setAxisMaximum(graphkg.getYMax() + 20);
-        graphkg.getAxisLeft().setAxisMinimum(graphkg.getYMin() - 20);
-        xAxiskg.setSpaceMax(0.9f);
-        xAxiskg.setSpaceMin(0.1f);
-        xAxiskg.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxiskg.setTextSize(18);
+        graphkg.setMarker(markoer);
         graphkg.setExtraBottomOffset(28);
         graphkg.getAxisLeft().setSpaceBottom(30);
         graphkg.getAxisLeft().setSpaceTop(30);
         graphkg.getAxisRight().setDrawGridLines(false);
         graphkg.getAxisLeft().setDrawGridLines(false);
-        xAxiskg.setDrawGridLines(false);
         graphkg.setOnChartValueSelectedListener(this);
         graphkg.getAxisLeft().setTextSize(20);
         graphkg.centerViewTo(kgdatas.size(), 1f, YAxis.AxisDependency.LEFT);
-        float minXRange = 3;
-        float maxXRange = 3;
-
-        graphkg.setVisibleXRange(minXRange, maxXRange);
         graphkg.setTouchEnabled(true);
         Legend l = graphkg.getLegend();
         l.setTextSize(18);
@@ -306,8 +284,80 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setFormSize(18);
         graphkg.getAxisRight().setEnabled(false);
-        graphkg.invalidate();
 
+
+    }
+
+
+    public void addDataMl() {
+
+        BarDataSet mlset = new BarDataSet(mldata, "");
+        mlset.setStackLabels(new String[]{"pr. OS", "IV"});
+        mlset.setColors(ColorTemplate.rgb("b3e5fc"), ColorTemplate.rgb("FF64B5F6"));
+
+        BarDataSet mlset2 = new BarDataSet(outputdata, "  I ml");
+        mlset2.setStackLabels(new String[]{"Urin", "Afføring"});
+        mlset2.setColors(ColorTemplate.rgb("215981"), ColorTemplate.rgb("90caf9"));
+        ArrayList<String> dates = new ArrayList<>();
+        for (LocalDate lolc : GraphDataFactory.dateSorter(Id, "Intake")) {
+            dates.add(formate.format(lolc));
+        }
+        bardata = new BarData(mlset, mlset2);
+        graphml.setData(bardata);
+        xAxisml = graphml.getXAxis();
+        xAxisml.setDrawGridLines(false);
+        xAxisml.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxisml.setCenterAxisLabels(true);
+        xAxisml.setGranularity(1f);
+        xAxisml.setSpaceMax(1.1f);
+        xAxisml.setSpaceMin(0.1f);
+        xAxisml.setTextSize(20);
+        xAxisml.setValueFormatter(new MinXAxisValueFormatter(dates));
+        graphml.setVisibleXRangeMaximum(5);
+        bardata.setValueTextSize(16f);
+        bardata.setValueFormatter(new Valueformatter(0));
+        bardata.setBarWidth(0.4f);
+        if (AppData.ani) {
+            graphml.animateY(1500);
+            AppData.ani = true;
+        }
+        graphml.groupBars(0f, 0.2f, 0f);
+        graphml.centerViewTo(mldata.size(), 1f, YAxis.AxisDependency.RIGHT);
+        graphml.highlightValue(mldata.size(), 0);
+        graphml.invalidate();
+    }
+
+    public void addDataKg() {
+
+        LineDataSet kgset = new LineDataSet(kgdatas, "Vægt (kg)");
+        kgset.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        kgset.setLineWidth(4f);
+        kgset.setHighlightLineWidth(3f);
+        kgset.setHighLightColor(Color.BLUE);
+        kgset.setCircleRadius(6);
+        kgset.setDrawHighlightIndicators(false);
+        kgdata = new LineData(kgset);
+        graphkg.setData(kgdata);
+        xAxiskg = graphkg.getXAxis();
+        xAxiskg.setGranularity(1f);
+        kgdata.setValueTextSize(16f);
+        xAxiskg.setSpaceMax(0.9f);
+        xAxiskg.setSpaceMin(0.1f);
+        graphkg.setVisibleXRangeMaximum(3);
+
+        xAxiskg.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxiskg.setTextSize(18);
+        xAxiskg.setDrawGridLines(false);
+        graphkg.getAxisLeft().setAxisMaximum(graphkg.getYMax() + 20);
+        graphkg.getAxisLeft().setAxisMinimum(graphkg.getYMin() - 20);
+
+
+        ArrayList<String> dates = new ArrayList<>();
+        for (LocalDate lolc : GraphDataFactory.dateSorter(Id, "Weight")) {
+            dates.add(formate.format(lolc));
+        }
+        xAxiskg.setValueFormatter(new MinXAxisValueFormatter(dates));
+        graphkg.invalidate();
 
     }
 
@@ -406,5 +456,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
         return false;
     }
 
+
 }
+
 

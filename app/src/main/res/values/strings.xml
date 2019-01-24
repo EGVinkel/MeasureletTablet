@@ -23,6 +23,8 @@
     <string name="valgafregistrering">Vælg en registrering</string>
     <string name="gem">Gem</string>
     <string name="slet">Slet</string>
+    <string name="rediger_registrering">Rediger Registrering</string>
+    <string name="v_ske">Væske</string>
 
 
     <string-array name="fluidtypes">

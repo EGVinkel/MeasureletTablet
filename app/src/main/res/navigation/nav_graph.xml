@@ -60,7 +60,7 @@
         app:popExitAnim="@anim/nav_default_exit_anim" />
     <fragment
         android:id="@+id/editlist"
-        android:name="measurelet.tablet.Fragments.Editlist"
+        android:name="measurelet.tablet.Fragments.EditlistDialog"
         android:label="fragment_editlist"
         tools:layout="@layout/fragment_editlist" />
 
