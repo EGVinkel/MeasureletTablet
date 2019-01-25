@@ -196,10 +196,11 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
             weightday.setText(kgdatas.get(kgdatas.size() - 1).getY() + "kg");
             graphkg.centerViewTo(kgdatas.size() - 1, 1f, YAxis.AxisDependency.LEFT);
 
-        } else {
+        } else if (kgdatas.size() > (int) e.getX() && !MainActivity.patientsHashmap.get(Id).getWeights().isEmpty()) {
             weightday.setText(kgdatas.get((int) e.getX()).getY() + "kg");
             graphkg.centerViewTo(e.getX(), 1f, YAxis.AxisDependency.LEFT);
             graphkg.highlightValue(h);
+
 
         }
 
@@ -209,7 +210,7 @@ public class Graphfragment extends Fragment implements View.OnClickListener, OnC
             intake.setText(tempin + "ml");
             output.setText(tempout + "ml");
             graphml.centerViewTo(mldata.size() - 1, 1f, YAxis.AxisDependency.LEFT);
-        } else if (mldata.size() > (int) e.getX()) {
+        } else if (mldata.size() > (int) e.getX() && !MainActivity.patientsHashmap.get(Id).getRegistrations().isEmpty()) {
             tempin = (int) mldata.get((int) e.getX()).getY();
             tempout = (int) outputdata.get((int) e.getX()).getY();
             intake.setText(tempin + "ml ");
