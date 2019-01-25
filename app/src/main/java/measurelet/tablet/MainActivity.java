@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 patientsHashmap.put(dataSnapshot.getKey(), changedpat);
                 patientArrayList.sort(Comparator.comparingInt(Patient::getBedNum));
                 mAdapter.notifyDataSetChanged();
+                AppData.ani = false;
                 navC.navigate(R.id.fadegraph, AppData.theb);
 
             }
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 patientsHashmap.remove(dataSnapshot.getKey());
                 patientArrayList.sort(Comparator.comparingInt(Patient::getBedNum));
                 mAdapter.notifyDataSetChanged();
+                AppData.ani = false;
                 navC.navigate(R.id.fadegraph, AppData.theb);
             }
 
